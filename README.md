@@ -2,10 +2,7 @@
 
 ## Build Setup
 ```
- 1. npm install
- 2. cd src
- 3. npm install
- 4. cd ../
+# npm install
 
 # serve with hot reload at localhost:3000
 npm run dev

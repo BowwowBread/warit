@@ -8,6 +8,9 @@ module.exports = {
     publicPath: '/dist/',
     filename: 'build.js'
   },
+  resolve: {
+    extensions: ['', '.js', '.vue']
+  },
   module: {
     rules: [
       {
@@ -27,7 +30,12 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        exclude: /node_modules/
+        exclude: /node_modules/,
+        query: {presets: ['es2015']}
+      },
+      {
+        test: /\.json$/,
+        loader: 'json'
       },
       {
         test: /\.(png|jpg|gif|svg)$/,

@@ -1,7 +1,8 @@
-const express = require('express');
+import express from 'express'
+
 const router = express.Router();
 
-const user = require('./users/users');
+import user from './users/users';
 
 router.get('/', (req, res, next) => {
   res.json({
@@ -10,4 +11,4 @@ router.get('/', (req, res, next) => {
 })
 
 router.use('/users', user);
-module.exports = router;
+export default router
