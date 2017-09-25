@@ -3,7 +3,9 @@ import controller from './users.controller';
 
 const router = express.Router();
 
-//show users
+/**
+ * show users
+ */
 router.get('/', (req, res) => {
 
   const response = users => {
@@ -25,7 +27,9 @@ router.get('/', (req, res) => {
     .catch(error);
 })
 
-//find user by _Id
+/**
+ * find user by _Id
+ */
 router.get('/:_id', (req, res) => {
   const _id = req.params._id;
   const response = user => {
@@ -47,7 +51,9 @@ router.get('/:_id', (req, res) => {
     .catch(error);
 })
 
-//find user by Name
+/**
+ * find user by Name
+ */
 router.get('/name/:username', (req, res) => {
   const username = req.params.username;
 
@@ -70,7 +76,9 @@ router.get('/name/:username', (req, res) => {
     .catch(error);
 })
 
-//search user _id by id
+/**
+ * search user _id by id
+ */
 router.get('/search/:id', (req, res) => {
   
     const id = req.params.id
@@ -96,7 +104,9 @@ router.get('/search/:id', (req, res) => {
 
 
 
-//add user
+/**
+ * add user
+ */
 router.post('/signup', (req, res) => {
   const userInfo = {
     user: {
@@ -126,7 +136,9 @@ router.post('/signup', (req, res) => {
     .catch(error);
 });
 
-//remove all users
+/**
+ * remove all users
+ */
 router.delete('/', (req, res) => {
   
     const response = (result) => {
@@ -147,7 +159,9 @@ router.delete('/', (req, res) => {
       .catch(error);
 });
 
-//remove user by Id
+/**
+ * remove user by Id
+ */
 router.delete('/:_id', (req, res) => {
   const _id = req.params._id;
 

@@ -5,6 +5,11 @@ const UserSchema = mongoose.Schema({
       {name: String, description: String}
     ]
   },
+  hates: {
+    list: [
+      {name: String, description: String}
+    ]
+  },
   user: {
     id: {
       type: String,
@@ -14,6 +19,7 @@ const UserSchema = mongoose.Schema({
       type: String,
       required: true
     },
+    
     name: {
       type: String,
       required: true

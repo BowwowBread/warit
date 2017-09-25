@@ -3,9 +3,16 @@ import mongoose from 'mongoose';
 import bodyparser from 'body-parser';
 import cors from 'cors';
 import path from 'path';
+import passport from 'passport';
+
 var app = express();
 
 import route from './routes/route';
+
+
+/**
+ * config mongodb
+ */
 
 //connect to mongodb
 mongoose.Promise = global.Promise;
@@ -21,8 +28,29 @@ mongoose.connection.on('error', (err) => {
     console.log('connecteion failed' + err);
   }
 })
+
+/**
+ * config passport
+ */
+
+//serialize
+passport.serializeUser(function (user, done) {
+  console.log('serialize');
+  done(null, user);
+});
+
+//deserialize
+passport.deserializeUser(function (user, done) {
+  console.log('deserialize');
+  done(null, user);
+})
+
 //port no
 const port = 3001;
+
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 //adding middleware - cors
 app.use(cors());
@@ -40,6 +68,8 @@ app.use('/api', route);
 app.get('/', (req, res) => {
   res.send('bowwow')
 })
+
+
 
 app.listen(port, () => {
   console.log('Service started at port : ' + port);

@@ -8,7 +8,6 @@
 npm run dev
 
 # build for production
-cd src
 npm run build
 
 # start server at localhost:3001
