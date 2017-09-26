@@ -4,10 +4,10 @@ import bodyparser from 'body-parser';
 import cors from 'cors';
 import path from 'path';
 import passport from 'passport';
-
+import session from 'express-session';
 var app = express();
 
-import route from './routes/route';
+import api from './routes/index';
 
 
 /**
@@ -48,6 +48,12 @@ passport.deserializeUser(function (user, done) {
 //port no
 const port = 3001;
 
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: false
+}));
+
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -62,7 +68,7 @@ app.use(bodyparser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 //routes
-app.use('/api', route);
+app.use('/api', api);
 
 //test server
 app.get('/', (req, res) => {
