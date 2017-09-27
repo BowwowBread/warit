@@ -1,11 +1,15 @@
 // 로그인 상태 체크
 const ensureAuthenticated = function (req, res, next) {
   if (req.isAuthenticated()) { 
+    res.json({
+      result: 'login',
+      message: "asd"
+    });
     return next(); 
   }
-  res.status(409).json({
+  res.json({
     result: 'error',
-    message: "not login"
+    message: "asd"
   })
 };
 

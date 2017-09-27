@@ -18,8 +18,7 @@ export default {
   methods: {
     auth_login(auth) {
       const baseURI = 'http://localhost:3001/api';
-      this.$cookie.set('sign', 'signup');
-      location.href=`${baseURI}/auth/${auth}`
+      location.href=`${baseURI}/auth/login/${auth}`
     }
   }
 }

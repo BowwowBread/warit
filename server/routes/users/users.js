@@ -39,7 +39,6 @@ router.get('/search/:email', (req, res) => {
   const email = req.params.email
 
   const response = (user) => {
-    console.log(user);
     res.json({
       result: 'success find _id by user email ' + email,
       _id: user
@@ -91,29 +90,32 @@ router.post('/signup', (req, res) => {
 });
 
 /**
- * login
+ * sign
  */
 
-router.get('/auth_success', (req, res) => {
-  const sign = req.cookies.sign;
-  console.log("1");
-  if (sign == "login") {
-    const email = req.user.info.email;
-    res.cookie("email", email).redirect('http://localhost:3000');
-  } else if (sign == "signup") {
-    const userInfo = {
-      info: {
-        email: req.userInfo.email,
-        auth_provider: req.userInfo.auth_provider
-      }
-    };
-    controller.registerUser(userInfo);
-    res.cookie("email", email).redirect('http://localhost:3000'); 
-  }
+router.get('/auth_login_success', (req, res) => {
+  const email = req.user.info.email;
+  res.cookie("email", email).redirect('http://localhost:3000');
 })
 
-router.get('/auth_fail', (req, res) => {
+router.get('/auth_signup_success', (req, res) => {
+  const userInfo = {
+    info: {
+      email: req.user.email,
+      auth_provider: req.user.auth_provider
+    }
+  }
+  controller.registerUser(userInfo);
+  res.cookie("email", req.user.email).redirect('http://localhost:3000');
+
+})
+
+router.get('/auth_login_fail', (req, res) => {
   res.redirect('http://localhost:3000/login');
+})
+
+router.get('/auth_signup_fail', (req, res) => {
+  res.redirect('http://localhost:3000/signup');
 })
 
 /**

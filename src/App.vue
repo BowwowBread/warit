@@ -28,9 +28,18 @@ export default {
   },
   created() {
     const email = this.$cookie.get('email');
-    if(email) {
-      this.email = email;
-    }
+    //해당 이메일의 유저 정보 체크
+    this.$http.get(`/users/search/${email}`)
+      .then((res) =>  {
+        if(res.data._id) {
+          this.email = email;
+        } else {
+          this.$cookie.delete('email');
+        }
+      })
+      .catch(() => {
+        this.$cookie.delete('email');
+      })
   },
   methods: {
     logout() {
@@ -38,6 +47,7 @@ export default {
       .then((res) => {
         this.$cookie.delete('email');
         this.email = null;
+        console.log(res);
       })
     }
   }
