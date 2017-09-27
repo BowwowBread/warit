@@ -1,6 +1,5 @@
 var path = require('path')
 var webpack = require('webpack')
-
 module.exports = {
   entry: './src/main.js',
   output: {
@@ -12,8 +11,7 @@ module.exports = {
     extensions: ['', '.js', '.vue']
   },
   module: {
-    rules: [
-      {
+    rules: [{
         test: /\.vue$/,
         loader: 'vue-loader',
         options: {
@@ -27,7 +25,9 @@ module.exports = {
         test: /\.js$/,
         loader: 'babel-loader',
         exclude: /node_modules/,
-        query: {presets: ['es2015']}
+        query: {
+          presets: ['es2015']
+        }
       },
       {
         test: /\.json$/,
@@ -50,7 +50,7 @@ module.exports = {
   devServer: {
     historyApiFallback: true,
     noInfo: true,
-    port : 3000,
+    port: 3000,
   },
   performance: {
     hints: false

@@ -11,11 +11,6 @@ import loginAuth from '../config/auth'
 /**
  * index
  */
-router.get('/', loginAuth.ensureAuthenticated, (req, res, next) => {
-  res.json({
-    "result": req.user.emails[0].value + " " + req.user.provider
-  });
-})
 
 /**
  * user api

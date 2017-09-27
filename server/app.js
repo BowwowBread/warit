@@ -5,6 +5,8 @@ import cors from 'cors';
 import path from 'path';
 import passport from 'passport';
 import session from 'express-session';
+import cookie from 'cookie-parser';
+
 var app = express();
 
 import api from './routes/index';
@@ -35,11 +37,13 @@ mongoose.connection.on('error', (err) => {
 
 //serialize
 passport.serializeUser(function (user, done) {
+  console.log("serialize");
   done(null, user);
 });
 
 //deserialize
 passport.deserializeUser(function (user, done) {
+  console.log("deserialize");
   done(null, user);
 })
 
@@ -52,12 +56,18 @@ app.use(session({
   saveUninitialized: false
 }));
 
+app.use(cookie());
+
 
 app.use(passport.initialize());
 app.use(passport.session());
 
 //adding middleware - cors
 app.use(cors());
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  next();
+});
 
 //body -parser
 app.use(bodyparser.json());
@@ -70,10 +80,8 @@ app.use('/api', api);
 
 //test server
 app.get('/', (req, res) => {
-  res.send('bowwow')
+  res.send('index')
 })
-
-
 
 app.listen(port, () => {
   console.log('Service started at port : ' + port);
