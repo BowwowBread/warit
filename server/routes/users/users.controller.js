@@ -16,12 +16,8 @@ User.findUserBy_Id = (_id) => {
   return User.findById(_id);
 }
 
-User.findUserByName = (username) => {
-  return User.findOne({"user.name" : username});
-}
-
-User.find_IdById = (id) => {
-  return User.findOne({"user.id": id});
+User.find_IdByEmail = (email) => {
+  return User.findOne({"info.email": email});
 }
 
 

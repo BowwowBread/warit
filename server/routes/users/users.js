@@ -1,7 +1,10 @@
 import express from 'express';
+import passport from 'passport';
 import controller from './users.controller';
 
 const router = express.Router();
+
+import loginAuth from '../../config/auth'
 
 /**
  * show users
@@ -51,53 +54,29 @@ router.get('/:_id', (req, res) => {
     .catch(error);
 })
 
-/**
- * find user by Name
- */
-router.get('/name/:username', (req, res) => {
-  const username = req.params.username;
-
-  const response = user => {
-    res.json({
-      result: 'success find user by username',
-      user: user
-    })
-  }
-
-  const error = err => {
-    res.status(409).json({
-      result: 'failed find user by username',
-      message: err.message
-    })
-  }
-
-  controller.findUserByName(username)
-    .then(response)
-    .catch(error);
-})
 
 /**
- * search user _id by id
+ * search user _id by email
  */
-router.get('/search/:id', (req, res) => {
+router.get('/search/:email', (req, res) => {
   
-    const id = req.params.id
+    const email = req.params.email
     
     const response = (user) => {
       res.json({
-        result: 'success find _id by user id ' + id ,
+        result: 'success find _id by user email ' + email ,
         _id: user._id
       });
     };
   
     const error = (err) => {
       res.status(409).json({
-        result: 'failed find _id by user id',
+        result: 'failed find _id by user email',
         message: err.message
       })
     }
   
-    controller.find_IdById(id)
+    controller.find_IdByEmail(email)
       .then(response)
       .catch(error);
   });
@@ -109,11 +88,9 @@ router.get('/search/:id', (req, res) => {
  */
 router.post('/signup', (req, res) => {
   const userInfo = {
-    user: {
-      id: req.body.userId,
-      pw: req.body.userPw,
-      name: req.body.userName,
-      age: req.body.userAge
+    info: {
+      email: req.body.email,
+      auth_provider: req.body.auth_provider
     }
   };
 

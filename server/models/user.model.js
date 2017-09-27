@@ -1,33 +1,26 @@
 import mongoose from 'mongoose';
 const UserSchema = mongoose.Schema({
   favorite: {
-    list: [
-      {name: String, description: String}
-    ]
+    list: [{
+      name: String,
+      description: String
+    }]
   },
   hates: {
-    list: [
-      {name: String, description: String}
-    ]
+    list: [{
+      name: String,
+      description: String
+    }]
   },
-  user: {
-    id: {
+  info: {
+    email: {
       type: String,
       required: true
     },
-    pw: {
+    auth_provider: {
       type: String,
       required: true
-    },
-    
-    name: {
-      type: String,
-      required: true
-    },
-    age: {
-      type: Number,
-      required: true
-    },
+    }
   },
 });
 

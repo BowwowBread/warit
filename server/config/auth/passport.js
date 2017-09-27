@@ -8,15 +8,23 @@ import {
 import {
   OAuth2Strategy as GoogleStrategy
 } from 'passport-google-oauth';
+
+
 import passport from 'passport';
+import mongoose from 'mongoose';
+import model from '../../models/user.model';
 
 import request from 'request';
-import auth from './auth';
+import auth from './auth.json';
 
+const User = mongoose.model('User');
+
+/**
+ * passport config
+ */
 passport.use(new KakaoStrategy(
   auth.kakao,
   function (accessToken, refreshToken, profile, done) {
-    console.log(profile);
     return done(null, profile);
   }
 ));
@@ -24,14 +32,13 @@ passport.use(new KakaoStrategy(
 passport.use(new FacebookStrategy(
   auth.facebook,
   function (accessToken, refreshToken, profile, done) {
-    console.log(profile);
     return done(null, profile);
-  }));
+  }
+));
 
 passport.use(new GoogleStrategy(
   auth.google,
   function (accessToken, refreshToken, profile, done) {
-    console.log(profile);
-    done(null, profile)
+    return done(null, profile);
   }
 ));

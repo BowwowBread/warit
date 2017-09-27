@@ -35,13 +35,11 @@ mongoose.connection.on('error', (err) => {
 
 //serialize
 passport.serializeUser(function (user, done) {
-  console.log('serialize');
   done(null, user);
 });
 
 //deserialize
 passport.deserializeUser(function (user, done) {
-  console.log('deserialize');
   done(null, user);
 })
 
