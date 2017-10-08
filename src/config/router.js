@@ -1,15 +1,23 @@
-import Login from '../components/auth/login.vue'
-import Signup from '../components/auth/signup.vue'
+import Sign from '../components/auth/sign.vue'
+import Search from '../components/main/search.vue'
+import Home from '../components/main/home.vue'
+
+
 
 export default [
   {
-    path: '/login',
-    name: 'login',
-    component: Login,
+    path: '/',
+    name: 'home',
+    component: Home,
   },
   {
-    path: '/signup',
-    name: 'signup',
-    component: Signup,
-  }
+    path: '/sign',
+    name: 'sign',
+    component: Sign,
+  },
+  {
+    path: '/search',
+    name: 'search',
+    component: Search,
+  },
 ]

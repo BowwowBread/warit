@@ -17,7 +17,7 @@ User.findUserBy_Id = (_id) => {
 }
 
 User.find_IdByEmail = (email) => {
-  return User.findOne({"info.email": email});
+  return User.find({"info.email": email});
 }
 
 

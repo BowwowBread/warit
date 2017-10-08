@@ -1,3 +1,4 @@
+require('es6-promise').polyfill();
 import Vue from 'vue'
 import Router from 'vue-router'
 import axios from 'axios'
@@ -18,7 +19,7 @@ const router = new Router({
 
 
 new Vue({
-  el: '#app',
+  el: '#AWT',
   router,
   render: h => h(App)
 })

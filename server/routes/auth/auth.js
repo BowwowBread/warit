@@ -10,23 +10,28 @@ const router = express.Router();
 router.get('/kakao',
   passport.authenticate('kakao')
 );
+
 router.get('/kakao/callback',
-  passport.authenticate('kakao',{
+  passport.authenticate('kakao', {
     failureRedirect: '/api/users/auth_fail',
-    successRedirect: '/api/users/auth_success'
+    successRedirect: '/api/users/auth_success',
+    failureFlash: true    
   })
 );
 
 //facebook
+
 router.get('/facebook',
   passport.authenticate('facebook', {
     scope: ['public_profile', 'email']
   })
 );
+
 router.get('/facebook/callback',
   passport.authenticate('facebook', {
     failureRedirect: '/api/users/auth_fail',
-    successRedirect: '/api/users/auth_success'
+    successRedirect: '/api/users/auth_success',
+    failureFlash: true    
   })
 );
 
@@ -38,18 +43,18 @@ router.get('/google',
   })
 );
 router.get('/google/callback',
-  passport.authenticate('google',{
+  passport.authenticate('google', {
     failureRedirect: '/api/users/auth_fail',
-    successRedirect: '/api/users/auth_success'
+    successRedirect: '/api/users/auth_success',
+    failureFlash: true
   })
 );
 
 //logout
 router.get('/logout', function (req, res) {
-  res.clearCookie('email')
   req.logout();
-  res.json({
-    "result" : "logout",
+  res.clearCookie('email').json({
+    "result": "logout",
   })
 });
 

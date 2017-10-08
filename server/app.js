@@ -5,11 +5,13 @@ import cors from 'cors';
 import path from 'path';
 import passport from 'passport';
 import session from 'express-session';
-import cookie from 'cookie-parser';
+import cookie from 'cookie-parser'; 
+import flash from 'connect-flash';
 
 var app = express();
 
 import api from './routes/index';
+import config from './config/config';
 
 
 /**
@@ -37,28 +39,27 @@ mongoose.connection.on('error', (err) => {
 
 //serialize
 passport.serializeUser(function (user, done) {
-  console.log("serialize");
   done(null, user);
 });
 
 //deserialize
 passport.deserializeUser(function (user, done) {
-  console.log("deserialize");
   done(null, user);
 })
 
 //port no
 const port = 3001;
 
+app.use(flash());
 app.use(session({
   secret: 'keyboard cat',
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: true,
+  path: '/*'
 }));
 
 app.use(cookie());
-
-
+app.set('jwt-secret', config.secret);
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -66,6 +67,15 @@ app.use(passport.session());
 app.use(cors());
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
+  next();
+});
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Credentials', true);
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+
   next();
 });
 

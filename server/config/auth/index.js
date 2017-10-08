@@ -2,11 +2,12 @@
 const ensureAuthenticated = function (req, res, next) {
   if (req.isAuthenticated()) { 
     return next(); 
+  } else {
+    res.json({
+      result: "fail",
+      message: "login please"
+    })
   }
-  res.status(409).json({
-    result: 'error',
-    message: "not login"
-  })
 };
 
 exports.ensureAuthenticated = ensureAuthenticated;

@@ -5,11 +5,13 @@ import controller from './users.controller';
 const router = express.Router();
 
 import loginAuth from '../../config/auth'
+import tokenAuth from '../../config/auth/auth.js'
+
 
 /**
  * show users
  */
-router.get('/', (req, res) => {
+router.get('/', tokenAuth.isAuthenticated(), (req, res) => {
 
   const response = users => {
     res.json({
@@ -32,17 +34,16 @@ router.get('/', (req, res) => {
 
 
 /**
- * search user _id by email
+ * search user by email
  */
 router.get('/search/:email', (req, res) => {
 
   const email = req.params.email
 
   const response = (user) => {
-    console.log(user);
     res.json({
       result: 'success find _id by user email ' + email,
-      _id: user
+      users: user[1]
     });
   };
 
@@ -91,29 +92,36 @@ router.post('/signup', (req, res) => {
 });
 
 /**
- * login
+ * sign
  */
 
+
 router.get('/auth_success', (req, res) => {
-  const sign = req.cookies.sign;
-  console.log("1");
-  if (sign == "login") {
-    const email = req.user.info.email;
-    res.cookie("email", email).redirect('http://localhost:3000');
-  } else if (sign == "signup") {
+  const signType = req.flash('sign-type')[0];
+  const email = req.user.info.email;
+  const auth_provider = req.user.info.auth_provider;
+  if (signType == "login") {
+    //로그인 성공
+  } else if (signType == "signup") {
+    //회원가입 성공
     const userInfo = {
       info: {
-        email: req.userInfo.email,
-        auth_provider: req.userInfo.auth_provider
+        email: email,
+        auth_provider: auth_provider
       }
-    };
+    }
     controller.registerUser(userInfo);
-    res.cookie("email", email).redirect('http://localhost:3000'); 
   }
+  const secret = req.app.get('jwt-secret');
+  const token = tokenAuth.signToken(email, secret);  
+  res.cookie("email", email)
+  .cookie("token", token)
+  .redirect('http://localhost:3000');
 })
 
+
 router.get('/auth_fail', (req, res) => {
-  res.redirect('http://localhost:3000/login');
+    res.redirect('http://localhost:3000/sign');    
 })
 
 /**
