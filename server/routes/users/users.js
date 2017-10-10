@@ -11,7 +11,7 @@ import tokenAuth from '../../config/auth/auth.js'
 /**
  * show users
  */
-router.get('/', tokenAuth.isAuthenticated(), (req, res) => {
+router.get('/', (req, res) => {
 
   const response = users => {
     res.json({
@@ -98,6 +98,7 @@ router.post('/signup', (req, res) => {
 
 router.get('/auth_success', (req, res) => {
   const signType = req.flash('sign-type')[0];
+  console.log(req.user)
   const email = req.user.info.email;
   const auth_provider = req.user.info.auth_provider;
   if (signType == "login") {
@@ -114,6 +115,7 @@ router.get('/auth_success', (req, res) => {
   }
   const secret = req.app.get('jwt-secret');
   const token = tokenAuth.signToken(email, secret);  
+  console.log(token);
   res.cookie("email", email)
   .cookie("token", token)
   .redirect('http://localhost:3000');

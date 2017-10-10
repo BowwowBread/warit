@@ -42,12 +42,14 @@ passport.use('kakao', new KakaoStrategy(
         User.find({
           "info.email": email
         }, (err, users) => {
-          if (users) {
+          if (users.length != 0) {
             return done(null, null);
           } else {
             const userInfo = {
-              email: email,
-              auth_provider: auth_provider
+              info: {
+                email: email,
+                auth_provider: auth_provider
+              }
             }
             return done(null, userInfo, req.flash('sign-type', 'signup'));
           }
@@ -73,12 +75,14 @@ passport.use('facebook', new FacebookStrategy(
         User.find({
           "info.email": email
         }, (err, users) => {
-          if (users) {
+          if (users.length != 0) {
             return done(null, null);
           } else {
             const userInfo = {
-              email: email,
-              auth_provider: auth_provider
+              info: {
+                email: email,
+                auth_provider: auth_provider
+              }
             }
             return done(null, userInfo, req.flash('sign-type', 'signup'));
           }
@@ -103,12 +107,14 @@ passport.use('google', new GoogleStrategy(
         User.find({
           "info.email": email
         }, (err, users) => {
-          if (users) {
+          if (users.length != 0) {
             return done(null, null);
           } else {
             const userInfo = {
-              email: email,
-              auth_provider: auth_provider
+              info: {
+                email: email,
+                auth_provider: auth_provider
+              }
             }
             return done(null, userInfo, req.flash('sign-type', 'signup'));
           }

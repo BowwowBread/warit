@@ -12,17 +12,17 @@ const getters = {
 }
 
 const mutations = {
-  [types.tokenauth](state, info) {
+  [types.TOKEN_AUTH](state, info) {
     state.info = info
     return state.info = info
   },
-  [types.logoutAuth](state) {
+  [types.LOAOUT_AUTH](state) {
     return state.info = null
   }
 }
 
 const actions = {
-  [types.tokenauth]({
+  [types.TOKEN_AUTH]({
     commit
   }, token) {
     return new Promise((resolve, reject) => {
@@ -33,7 +33,7 @@ const actions = {
             email: res.data.email,
             token,
           }
-          commit(types.tokenauth, info)
+          commit(types.TOKEN_AUTH, info)
           resolve(info)
         })
         .catch((err) => {
@@ -41,13 +41,13 @@ const actions = {
         })
     });
   },
-  [types.logoutAuth]({
+  [types.LOAOUT_AUTH]({
     commit
   }) {
     return new Promise((resolve, reject) => {
       api.get('/auth/logout')
         .then((res) => {
-          commit(types.logoutAuth)
+          commit(types.LOAOUT_AUTH)
           resolve(res)
         })
         .catch((err) => {

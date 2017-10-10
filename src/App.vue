@@ -7,7 +7,7 @@
       <button @click="logout">logout</button>
     </div>
     </p>
-    <router-view :latlng="LatLng"></router-view>
+    <router-view></router-view>
     {{email}}
   </div>
 </template>
@@ -38,7 +38,7 @@
     },
     watch: {
       '$route' : [
-        'tokenAuth',
+        'tokenAuth', 
       ]
     },
     computed: {
@@ -49,12 +49,12 @@
     },
     methods: {
       ...mapActions([
-        'tokenauth',
-        'logoutAuth',
-        'updatelocation'
+        'TOKEN_AUTH',
+        'LOAOUT_AUTH',
+        'UPDATE_LOCATION'
       ]),
       updateLocation() {
-        this.updatelocation()
+        this.UPDATE_LOCATION()
           .then((res) => {
             this.LatLng = this.getLatLng
           })
@@ -64,7 +64,7 @@
       },
       tokenAuth() {
         const token = this.$cookie.get('token');
-        this.tokenauth(token)
+        this.TOKEN_AUTH(token)
           .then((res) => {
             this.email = this.getInfo.email;
           })
@@ -78,7 +78,7 @@
           })
       },
       logout() {
-        this.logoutAuth()
+        this.LOAOUT_AUTH()
           .then((res) => {
             this.email = this.getEmail;
             this.$cookie.delete('email')
