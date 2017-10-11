@@ -1,17 +1,17 @@
-import express from 'express';
-import mongoose from 'mongoose';
-import bodyparser from 'body-parser';
-import cors from 'cors';
-import path from 'path';
-import passport from 'passport';
-import session from 'express-session';
-import cookie from 'cookie-parser'; 
-import flash from 'connect-flash';
+import express from 'express'
+import mongoose from 'mongoose'
+import bodyparser from 'body-parser'
+import cors from 'cors'
+import path from 'path'
+import passport from 'passport'
+import session from 'express-session'
+import cookie from 'cookie-parser' 
+import flash from 'connect-flash'
 
-var app = express();
+var app = express()
 
-import api from './routes/index';
-import config from './config/config';
+import api from './routes/index'
+import config from './config/config'
 
 
 /**
@@ -19,17 +19,17 @@ import config from './config/config';
  */
 
 //connect to mongodb
-mongoose.Promise = global.Promise;
+mongoose.Promise = global.Promise
 mongoose.connection.openUri('mongodb://localhost:27017/contacts')
 
 //on connection
 mongoose.connection.on('connected', () => {
-  console.log('connected @27017');
+  console.log('connected @27017')
 })
 
 mongoose.connection.on('error', (err) => {
   if (err) {
-    console.log('connecteion failed' + err);
+    console.log('connecteion failed' + err)
   }
 })
 
@@ -39,54 +39,55 @@ mongoose.connection.on('error', (err) => {
 
 //serialize
 passport.serializeUser(function (user, done) {
-  done(null, user);
-});
+  done(null, user)
+})
 
 //deserialize
 passport.deserializeUser(function (user, done) {
-  done(null, user);
+  done(null, user)
 })
 
 //port no
-const port = 3001;
+const port = 3001
 
-app.use(flash());
+app.use(flash())
 app.use(session({
   secret: 'keyboard cat',
   resave: false,
   saveUninitialized: true,
   path: '/*'
-}));
+}))
 
-app.use(cookie());
-app.set('jwt-secret', config.secret);
-app.use(passport.initialize());
-app.use(passport.session());
-
+app.use(cookie())
+app.set('jwt-secret', config.secret)
+app.use(passport.initialize())
+app.use(passport.session())
+app.use(bodyparser.urlencoded({ extended: false }));
+app.use(bodyparser.json());
 //adding middleware - cors
-app.use(cors());
+app.use(cors())
 app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  next();
-});
+  res.header("Access-Control-Allow-Origin", "*")
+  next()
+})
 
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Credentials', true);
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  res.header('Access-Control-Allow-Credentials', true)
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+  res.header('Access-Control-Allow-Headers', 'Content-Type')
 
-  next();
-});
+  next()
+})
 
 //body -parser
-app.use(bodyparser.json());
+app.use(bodyparser.json())
 
 //static files
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')))
 
 //routes
-app.use('/api', api);
+app.use('/api', api)
 
 //test server
 app.get('/', (req, res) => {
@@ -94,5 +95,5 @@ app.get('/', (req, res) => {
 })
 
 app.listen(port, () => {
-  console.log('Service started at port : ' + port);
-});
+  console.log('Service started at port : ' + port)
+})

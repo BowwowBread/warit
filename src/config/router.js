@@ -5,7 +5,7 @@ import Sign from '../components/auth/sign.vue'
 import Search from '../components/main/search.vue'
 import Home from '../components/main/home.vue'
 
-Vue.use(Router);
+Vue.use(Router)
 
 export default new Router({
   mode: 'history',

@@ -15,10 +15,11 @@
         <span>{{food.distance}}</span>
         <span>{{food.address}}</span>
         <span>{{food.like}}</span>
+        <span>{{food.likeCount}}</span>
         <span>{{food.hate}}</span>
         
-        <button @click="toggle('like')">like</button>
-        <button @click="toggle('hate')">hate</button>        
+        <button @click="toggle('like', food)">like</button>
+        <button @click="toggle('hate', food)">hate</button>        
       </li>
     </ul>
   </div>
@@ -38,69 +39,108 @@ export default {
     }
   },
   created() {
+    const LatLng = this.getLatLng
+    if(LatLng.lat == 0) {
+      this.$router.push({
+        path: '/'
+      })
+    }
+    let foodList = []            
+    const callback = (result, status, pagination) => {
+        if (status === daum.maps.services.Status.OK) {
+          foodList.push(result)
+          if (pagination.hasNextPage) {
+            pagination.nextPage()
+          } else {
+          this.FOOD_LIST(foodList)
+            .then((res) => {
+              this.foodList = this.getFoodList("asc")
+              this.fetchFoods()              
+            })
+            .catch((err) => {
+              console.log(err)
+            })
+          }
 
+        } else if (status === daum.maps.services.Status.ZERO_RESULT) {
+            console.log('검색 결과가 존재하지 않습니다.')
+            return
+        } else if (status === daum.maps.services.Status.ERROR) {
+            console.log('검색 결과 중 오류가 발생했습니다.')
+            return
+        }
+      }
+      this.CATEGORY_SEARCH(callback)
   },
   computed: {
     ...mapGetters([
-      'getFoodList'
+      'getFoodList',
+      'getLatLng'
     ]),
   },
   methods: {
     ...mapActions([
+      'CATEGORY_SEARCH',
       'KEYWORD_SEARCH',
-      'FOOD_LIST'
+      'FOOD_LIST',
+      'LIKE',
+      'UNLIKE',
+      'HATE',
+      'UNHATE',
+      'fetchFoods'
     ]),
     goPage(index) {
-      this.index = index;
+      this.index = index
     },
-    toggle(type) {
+    toggle(type, food) {
       if (type == "like") {
-
+        this.LIKE(food.id)
       } else if (type == "hate") {
 
       }
     },
     sort(type, index) {
-      if (type == "asc") {
-        return this.foodList[index].sort((a, b) => {
-          return a.place_name > b.place_name ? -1 : a.place_name < b.place_name ? 1 : 0;
-        })
-      } else if (type == "desc") {
+      if (type == "desc") {
         return this.foodList[index].sort((a, b) => {
           return a.place_name < b.place_name ? -1 : a.place_name > b.place_name ? 1 : 0
         })
-      }
+        
+      }  else if (type == "asc") {
+        return this.foodList[index].sort((a, b) => {
+          return a.place_name > b.place_name ? -1 : a.place_name < b.place_name ? 1 : 0
+        })
+      } 
     },
     keywordSearch(keyword) {
-      let foodList = [];      
+      let foodList = []      
       const callback = (result, status, pagination) => {
           if (status === daum.maps.services.Status.OK) {
-            foodList.push(result);
+            foodList.push(result)
             if (pagination.hasNextPage) {
-              pagination.nextPage();
+              pagination.nextPage()
             } else {
             this.FOOD_LIST(foodList)
               .then((res) => {
-                this.foodList = this.getFoodList("desc");
+                this.foodList = this.getFoodList("asc")
               })
               .catch((err) => {
-
+                console.log(err)
               })
             }
 
           } else if (status === daum.maps.services.Status.ZERO_RESULT) {
-              console.log('검색 결과가 존재하지 않습니다.');
-              return;
+              console.log('검색 결과가 존재하지 않습니다.')
+              return
           } else if (status === daum.maps.services.Status.ERROR) {
-              console.log('검색 결과 중 오류가 발생했습니다.');
-              return;
+              console.log('검색 결과 중 오류가 발생했습니다.')
+              return
           }
         }
         this.KEYWORD_SEARCH({
           callback,
           keyword,
           global: false
-        });
+        })
     }
   }
 }

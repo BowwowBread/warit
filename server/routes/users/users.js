@@ -1,8 +1,8 @@
-import express from 'express';
-import passport from 'passport';
-import controller from './users.controller';
+import express from 'express'
+import passport from 'passport'
+import controller from './users.controller'
 
-const router = express.Router();
+const router = express.Router()
 
 import loginAuth from '../../config/auth'
 import tokenAuth from '../../config/auth/auth.js'
@@ -18,18 +18,18 @@ router.get('/', (req, res) => {
       result: 'success show all ' + users.length + ' user.',
       users: users
     })
-  };
+  }
 
   const error = err => {
     res.status(409).json({
       result: 'failed show all user',
       message: error.message
     })
-  };
+  }
 
   controller.findAllUser()
     .then(response)
-    .catch(error);
+    .catch(error)
 })
 
 
@@ -42,22 +42,22 @@ router.get('/search/:email', (req, res) => {
 
   const response = (user) => {
     res.json({
-      result: 'success find _id by user email ' + email,
-      users: user[1]
-    });
-  };
+      result: 'success find email by user email ' + email,
+      user: user
+    })
+  }
 
   const error = (err) => {
     res.status(409).json({
-      result: 'failed find _id by user email',
+      result: 'failed find email by user email',
       message: err.message
     })
   }
 
-  controller.find_IdByEmail(email)
+  controller.findByEmail(email)
     .then(response)
-    .catch(error);
-});
+    .catch(error)
+})
 
 
 
@@ -70,26 +70,26 @@ router.post('/signup', (req, res) => {
       email: req.body.email,
       auth_provider: req.body.auth_provider
     }
-  };
+  }
 
   const response = user => {
     res.json({
       result: 'register user success.',
       user: user
     })
-  };
+  }
 
   const error = err => {
     res.status(409).json({
       result: 'register user failed.',
       message: error.message
     })
-  };
+  }
 
   controller.registerUser(userInfo)
     .then(response)
-    .catch(error);
-});
+    .catch(error)
+})
 
 /**
  * sign
@@ -97,10 +97,10 @@ router.post('/signup', (req, res) => {
 
 
 router.get('/auth_success', (req, res) => {
-  const signType = req.flash('sign-type')[0];
+  const signType = req.flash('sign-type')[0]
   console.log(req.user)
-  const email = req.user.info.email;
-  const auth_provider = req.user.info.auth_provider;
+  const email = req.user.info.email
+  const auth_provider = req.user.info.auth_provider
   if (signType == "login") {
     //로그인 성공
   } else if (signType == "signup") {
@@ -111,19 +111,19 @@ router.get('/auth_success', (req, res) => {
         auth_provider: auth_provider
       }
     }
-    controller.registerUser(userInfo);
+    controller.registerUser(userInfo)
   }
-  const secret = req.app.get('jwt-secret');
-  const token = tokenAuth.signToken(email, secret);  
-  console.log(token);
+  const secret = req.app.get('jwt-secret')
+  const token = tokenAuth.signToken(email, secret)  
+  console.log(token)
   res.cookie("email", email)
   .cookie("token", token)
-  .redirect('http://localhost:3000');
+  .redirect('http://localhost:3000')
 })
 
 
 router.get('/auth_fail', (req, res) => {
-    res.redirect('http://localhost:3000/sign');    
+    res.redirect('http://localhost:3000/sign')    
 })
 
 /**
@@ -146,34 +146,34 @@ router.delete('/', (req, res) => {
 
   controller.removeAllUser()
     .then(response)
-    .catch(error);
-});
+    .catch(error)
+})
 
 /**
- * remove user by Id
+ * remove user by email
  */
-router.delete('/:_id', (req, res) => {
-  const _id = req.params._id;
+router.delete('/:email', (req, res) => {
+  const email = req.params.email
 
   const response = user => {
     res.json({
-      result: 'success remove user by _id ' + _id,
+      result: 'success remove user by email ' + email,
       user: user
     })
   }
 
   const error = err => {
     res.status(409).json({
-      result: 'failed remove user by _id',
+      result: 'failed remove user by email',
       message: err.message
     })
   }
 
-  controller.removeUserBy_Id(_id)
+  controller.removeUserByEmail(email)
     .then(response)
-    .catch(error);
+    .catch(error)
 })
 
 
 
-export default router;
+export default router

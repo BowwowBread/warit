@@ -13,7 +13,7 @@ const getters = {
 
 const mutations = {
   [types.UPDATE_LOCATION] (state, LatLng) {
-    return state.LatLng = LatLng;
+    return state.LatLng = LatLng
   }
 }
 

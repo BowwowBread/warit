@@ -26,7 +26,7 @@ const actions = {
     commit
   }, token) {
     return new Promise((resolve, reject) => {
-      api.defaults.headers.common.Authorization = token;
+      api.defaults.headers.common.Authorization = token
       api.get('/auth')
         .then((res) => {
           const info = {
@@ -39,7 +39,7 @@ const actions = {
         .catch((err) => {
           reject(err)
         })
-    });
+    })
   },
   [types.LOAOUT_AUTH]({
     commit

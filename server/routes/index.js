@@ -1,33 +1,24 @@
 import express from 'express'
-const router = express.Router();
-import passport from 'passport';
+const router = express.Router()
+import passport from 'passport'
 
-import user from './users/users';
-import auth from './auth/auth';
-import search from './search/search';
-import myinfo from './myinfo/myinfo';
+import user from './users/users'
+import auth from './auth/auth'
+import food from './food/food'
 
-import request from 'request';
+import request from 'request'
 
 import loginAuth from '../config/auth'
 
 /**
- * index
+ * api routes
  */
+router.use('/users', user)
 
-/**
- * user api
- */
-router.use('/users', user);
+router.use('/auth', auth)
 
-/**
- * passport api
- */
-router.use('/auth', auth);
+router.use('/food', food)
 
-router.use('/search', search);
-
-router.use('/myinfo', myinfo);
 
 
 export default router

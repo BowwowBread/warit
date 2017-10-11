@@ -1,7 +1,7 @@
-import mongoose from 'mongoose';
-import model from '../../models/user.model';
+import mongoose from 'mongoose'
+import model from '../../models/user.model'
 
-const User = mongoose.model('User');
+const User = mongoose.model('User')
 
 
 /**
@@ -9,15 +9,11 @@ const User = mongoose.model('User');
  */
 
 User.findAllUser = () => {
-  return User.find();
+  return User.find()
 }
 
-User.findUserBy_Id = (_id) => {
-  return User.findById(_id);
-}
-
-User.find_IdByEmail = (email) => {
-  return User.find({"info.email": email});
+User.findByEmail = (email) => {
+  return User.findOne({"info.email": email})
 }
 
 
@@ -26,7 +22,7 @@ User.find_IdByEmail = (email) => {
  */
 
 User.registerUser = (userInfo) => {
-  return User.create(userInfo);
+  return User.create(userInfo)
 }
 
 
@@ -34,12 +30,12 @@ User.registerUser = (userInfo) => {
  * remove user
  */
 
-User.removeUserBy_Id = (_id) => {
-  return User.findOneAndRemove(_id);
+User.removeUserByemail = (email) => {
+  return User.findOneAndRemove(email)
 }
 
 User.removeAllUser = () => {
-  return User.remove();
+  return User.remove()
 }
 
-export default User;
+export default User

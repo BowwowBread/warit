@@ -33,8 +33,8 @@
       }
     },
     created() {
-      this.tokenAuth();
-      this.updateLocation();
+      this.tokenAuth()
+      this.updateLocation()
     },
     watch: {
       '$route' : [
@@ -63,32 +63,32 @@
           })
       },
       tokenAuth() {
-        const token = this.$cookie.get('token');
+        const token = this.$cookie.get('token')
         this.TOKEN_AUTH(token)
           .then((res) => {
-            this.email = this.getInfo.email;
+            this.email = this.getInfo.email
           })
           .catch((err) => {
-            console.log(err);
+            console.log(err)
             this.$cookie.delete('email')
             this.$cookie.delete('token')
             this.$router.push({
               path: '/sign'
-            });
+            })
           })
       },
       logout() {
         this.LOAOUT_AUTH()
           .then((res) => {
-            this.email = this.getEmail;
+            this.email = this.getEmail
             this.$cookie.delete('email')
             this.$cookie.delete('token')
             this.$router.push({
               path: '/sign'
-            });
+            })
           })
           .catch((err) => {
-            console.log(err);
+            console.log(err)
           })
       }
     }
