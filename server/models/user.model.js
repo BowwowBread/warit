@@ -10,13 +10,13 @@ import mongoose from 'mongoose';
 const UserSchema = mongoose.Schema({
   rating: {
     likes: [{
-      seq: {
+      id: {
         type: Number,
         required: true
       },
     }],
     hates: [{
-      seq: {
+      id: {
         type: Number,
         required: true
       }
