@@ -7,19 +7,21 @@
     <button @click="goPage(0)">1</button>
     <button @click="goPage(1)">2</button>
     <button @click="goPage(2)">3</button>
-    
     <ul>
-      <li v-for="food in foodList[index]" v-bind:key="food.id">
+      <li v-for="(food, index) in foodList" v-bind:key="food.id">
         <span>{{food.place_name}}</span>
-        <span>{{food.category_name}}</span>
-        <span>{{food.distance}}</span>
-        <span>{{food.address}}</span>
+        <!-- <span>{{food.category_name}}</span> -->
+        <!-- <span>{{food.distance}}</span> -->
+        <!-- <span>{{food.address}}</span> -->
         <span>{{food.like}}</span>
         <span>{{food.likeCount}}</span>
         <span>{{food.hate}}</span>
         
-        <button @click="toggle('like', food)">like</button>
-        <button @click="toggle('hate', food)">hate</button>        
+        <button v-if="!food.like" @click="toggle('like', food, index)">like</button>
+        <button v-else @click="toggle('unlike', food, index)">unlike</button>
+        <button v-if="!food.hate" @click="toggle('hate', food, index)">hate</button>        
+        <button v-else @click="toggle('unhate', food, index)">unhate</button>        
+        
       </li>
     </ul>
   </div>
@@ -92,22 +94,52 @@ export default {
     goPage(index) {
       this.index = index
     },
-    toggle(type, food) {
+    toggle(type, food, index) {
       if (type == "like") {
         this.LIKE(food.id)
+        while (1) {
+          if (index == 0) {
+            return
+          }
+          if (food.likeCount + 1 > this.foodList[index - 1].likeCount) {
+            let tmp = this.foodList[index - 1]
+            this.foodList[index - 1] = food
+            this.foodList[index] = tmp
+            index--
+          } else if(food.likeCount + 1 == this.foodList[index - 1].likeCount) {
+            return
+          }
+        }
+      } else if(type == "unlike") {
+        this.UNLIKE(food.id)
+        while (1) {
+          if (index == this.foodList.length) {
+            return
+          }
+          if (food.likeCount < this.foodList[index + 1].likeCount) {
+            let tmp = this.foodList[index + 1]
+            this.foodList[index + 1] = food
+            this.foodList[index] = tmp
+            index++            
+          } else if(food.likeCount + 1 == this.foodList[index + 1].likeCount) {
+            return
+          } 
+        }
       } else if (type == "hate") {
-
+        this.HATE(food.id)
+      } else if (type == "unhate") {
+        this.UNHATE(food.id)
       }
     },
     sort(type, index) {
-      if (type == "desc") {
-        return this.foodList[index].sort((a, b) => {
-          return a.place_name < b.place_name ? -1 : a.place_name > b.place_name ? 1 : 0
+      if (type == "asc") {
+        return this.foodList.sort((a, b) => {
+          return b.likeCount - a.likeCount
         })
         
-      }  else if (type == "asc") {
-        return this.foodList[index].sort((a, b) => {
-          return a.place_name > b.place_name ? -1 : a.place_name < b.place_name ? 1 : 0
+      }  else if (type == "desc") {
+        return this.foodList.sort((a, b) => {
+          return a.likeCount - b.likeCount
         })
       } 
     },

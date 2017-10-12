@@ -26,6 +26,7 @@
     data() {
       return {
         email: null,
+        token: null,
         LatLng: {
           lat: 0,
           lng: 0,
@@ -63,10 +64,14 @@
           })
       },
       tokenAuth() {
-        const token = this.$cookie.get('token')
-        this.TOKEN_AUTH(token)
+        this.token = this.getInfo.token
+        if(!this.token) {
+          this.token = this.$cookie.get('token')
+        }
+        this.TOKEN_AUTH(this.token)
           .then((res) => {
             this.email = this.getInfo.email
+            this.$cookie.delete('email')
           })
           .catch((err) => {
             console.log(err)

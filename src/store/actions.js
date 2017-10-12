@@ -42,28 +42,44 @@ export const KEYWORD_SEARCH = ({ getters }, arg) => {
     })
   }
 }
-export const fetchFoods = ({ commit }) => {
+export const fetchFoods = ({ state, commit }) => {
   api.get('/food')
   .then((res) => {
-    commit(types.FETCH, res.data.foods)
+    const email = state.auth.info.email
+    api.get(`/users/search/${email}`)
+      .then((user) => {
+        const data = {
+          foods: res.data.foods,
+          rating: user.data.user.rating
+        }
+        commit(types.FETCH, data)
+      })
   })
   .catch((err) => {
     console.log(err.message)
   })
 }
-export const LIKE = ({ commit }, id) => {
+export const LIKE = ({ state, commit }, id) => {
   api.get(`/food/like/${id}`)
   .then((res) => {
-    commit(types.LIKE, res.data.food)
+    const email = state.auth.info.email
+    api.get(`/users/like/${email}/${id}`)
+      .then(() => {
+        commit(types.LIKE, res.data.food)
+      })
   })
   .catch((err) => {
     console.log(err)
   })
 }
-export const UNLIKE = ({ commit }, id) => {
-  api.get(`/food/unlike/${id}`)
+export const UNLIKE = ({ state, commit }, id) => {
+  api.delete(`/food/like/${id}`)
   .then((res) => {
-    console.log(res)
+    const email = state.auth.info.email
+    api.delete(`/users/like/${email}/${id}`)
+      .then(() => {
+        commit(types.UNLIKE, res.data.food)
+      })
   })
   .catch((err) => {
     console.log(err)

@@ -23,13 +23,16 @@ const getters = {
    */
   getFoodList: (state) => {
     return (sort, index) => {
-      if (sort == "desc") {
+      if (sort == "asc") {
         return state.foodList.sort((a, b) => {
-          return a.place_name > b.place_name ? -1 : a.place_name < b.place_name ? 1 : 0
+          if (a.likeCount < b.likeCount) return 1
+          if (a.likeCount > b.likeCount) return -1
+          if (a.likeCount == b.likeCount) return 0
+          return a.likeCount - b.likeCount
         })
-      } else if (sort == "asc") {
+      } else if (sort == "desc") {
         return state.foodList.sort((a, b) => {
-          return a.place_name < b.place_name ? -1 : a.place_name > b.place_name ? 1 : 0
+          return a.likeCount < b.likeCount ? -1 : a.likeCount > b.likeCount ? 1 : 0
         })
       }
     }
@@ -41,40 +44,50 @@ const mutations = {
     return state.foodList = foodList
   },
   [types.FETCH](state, data) {
+    const foods = data.foods
+    let likes = null
+    if(data.rating != undefined) {
+      likes = data.rating.likes
+    }
     state.foodList.forEach((foodData) => {
-      data.forEach((foods) => {
-        const index = foodData.findIndex((food) => food.id == foods.id)
-        if(index != -1) {
-          foodData[index].like = foods.like
-          foodData[index].likeCount = foods.likeCount
-          foodData[index].hate = foods.hate        
+      foods.forEach((food) => {
+        if(foodData.id == food.id) {
+          foodData.likeCount = food.likeCount
+          foodData.hate = food.hate
         }
       })
+      if(likes) {
+        likes.map((like_id) => {
+          if(foodData.id == like_id) {
+            foodData.like = true
+          }
+        })
+      }
+    })
+    return state.foodList.sort((a, b) => {
+      return b.likeCount - a.likeCount    
     })
   },
   [types.LIKE](state, data) {
     state.foodList.forEach((foodData) => {
-      const index = foodData.findIndex((food) => food.id == data.id)
-      if(index != -1) {
-        foodData[index].like = data.like
-        foodData[index].likeCount = data.likeCount
+      if(foodData.id == data.id) {
+        foodData.like = true
+        foodData.likeCount = data.likeCount
       }
     })
   },
   [types.UNLIKE](state, data) {
     state.foodList.forEach((foodData) => {
-      const index = foodData.findIndex((food) => food.id == data.id)
-      if(index != -1) {
-        foodData[index].like = data.like
-        foodData[index].likeCount = data.likeCount
+      if(foodData.id == data.id) {
+        foodData.like = false
+        foodData.likeCount = data.likeCount
       }
     })
   },
   [types.HATE](state, data) {
     state.foodList.forEach((foodData) => {
-      const index = foodData.findIndex((food) => food.id == data.id)
-      if(index != -1) {
-        foodData[index].hate = data.hate
+      if(foodData.id == data.id) {
+        foodData.hate = data.hate
       }
     })
   },
@@ -95,9 +108,9 @@ const actions = {
     return new Promise((resolve, reject) => {
       if (foods.length != 0) {
         var foodList = []
-        const foodList = foods.map((foodData) => {
-          return foodData.map((food) => {
-            return {
+        foods.forEach((foodData) => {
+          foodData.forEach((food) => {
+            foodList.push({
               place_name: food.place_name,
               category_name: food.category_name,
               distance: food.distance,
@@ -108,7 +121,7 @@ const actions = {
               like: false,
               likeCount: 0,
               hate: false
-            }
+            })
           })
         })
         commit(types.FOOD_LIST, foodList)

@@ -38,4 +38,20 @@ User.removeAllUser = () => {
   return User.remove()
 }
 
+User.likeFood = (email, food_id) => {
+  return User.findOneAndUpdate(
+    {"info.email" : email},
+    { $push : { "rating.likes" : food_id } },
+    { new : true , strict: false}
+  )
+}
+
+User.unlikeFood = (email, food_id) => {
+  return User.findOneAndUpdate(
+    {"info.email" : email},
+    { $pull : { "rating.likes" : food_id } },
+    { new : true , strict: false}
+  )
+}
+
 export default User

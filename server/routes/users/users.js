@@ -98,11 +98,16 @@ router.post('/signup', (req, res) => {
 
 router.get('/auth_success', (req, res) => {
   const signType = req.flash('sign-type')[0]
-  console.log(req.user)
   const email = req.user.info.email
   const auth_provider = req.user.info.auth_provider
+  console.log(signType)
   if (signType == "login") {
     //로그인 성공
+    const secret = req.app.get('jwt-secret')
+    const token = tokenAuth.signToken(email, secret)
+    res.cookie("email", email)
+      .cookie("token", token)
+      .redirect('http://localhost:3000')
   } else if (signType == "signup") {
     //회원가입 성공
     const userInfo = {
@@ -111,19 +116,30 @@ router.get('/auth_success', (req, res) => {
         auth_provider: auth_provider
       }
     }
+    const response = user => {
+      const secret = req.app.get('jwt-secret')
+      const token = tokenAuth.signToken(email, secret)
+      res.cookie("email", email)
+        .cookie("token", token)
+        .redirect('http://localhost:3000')
+    }
+
+    const error = err => {
+      res.status(409).json({
+        result: 'register user failed.',
+        message: err.message
+      })
+    }
     controller.registerUser(userInfo)
+      .then(response)
+      .catch(error)
   }
-  const secret = req.app.get('jwt-secret')
-  const token = tokenAuth.signToken(email, secret)  
-  console.log(token)
-  res.cookie("email", email)
-  .cookie("token", token)
-  .redirect('http://localhost:3000')
+
 })
 
 
 router.get('/auth_fail', (req, res) => {
-    res.redirect('http://localhost:3000/sign')    
+  res.redirect('http://localhost:3000/sign')
 })
 
 /**
@@ -174,6 +190,48 @@ router.delete('/:email', (req, res) => {
     .catch(error)
 })
 
+router.get('/like/:email/:id', (req, res) => {
+  const email = req.params.email
+  const id = req.params.id
+  const response = user => {
+    res.json({
+      result: 'success like food.',
+      user: user
+    })
+  }
 
+  const error = err => {
+    res.status(409).json({
+      result: 'failed like food.',
+      message: err.message
+    })
+  }
+
+  controller.likeFood(email, id)
+    .then(response)
+    .catch(error)
+  })
+  
+  router.delete('/like/:email/:id', (req, res) => {
+  const email = req.params.email
+  const id = req.params.id
+  const response = user => {
+    res.json({
+      result: 'success unlike food.',
+      user: user
+    })
+  }
+
+  const error = err => {
+    res.status(409).json({
+      result: 'failed unlike food.',
+      message: err.message
+    })
+  }
+
+  controller.unlikeFood(email, id)
+    .then(response)
+    .catch(error)
+})
 
 export default router

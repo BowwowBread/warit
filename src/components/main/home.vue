@@ -56,7 +56,6 @@
         this.UPDATE_LOCATION()
           .then((res) => {
             this.LatLng = this.getLatLng
-            console.log(this.LatLng)
           })
           .catch((err) => {
             console.log(err)
@@ -126,10 +125,8 @@
                 const bounds = new daum.maps.LatLngBounds()                        
                 foodList = this.getFoodLists
                 foodList.forEach((foodData) => {
-                  foodData.forEach((food) => {
-                    this.displayMarker(food)
-                    bounds.extend(new daum.maps.LatLng(food.y, food.x))
-                  })
+                    this.displayMarker(foodData)
+                    bounds.extend(new daum.maps.LatLng(foodData.y, foodData.x))
                 })
                 this.map.setBounds(bounds)
               })

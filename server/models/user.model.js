@@ -9,18 +9,16 @@ import mongoose from 'mongoose';
  */
 const UserSchema = mongoose.Schema({
   rating: {
-    likes: [{
-      id: {
+    likes: {
+      food_id: {
         type: Number,
-        required: true
       },
-    }],
-    hates: [{
-      id: {
+    },
+    hates: {
+      food_id: {
         type: Number,
-        required: true
       }
-    }]
+    }
   },
   info: {
     email: {
