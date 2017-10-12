@@ -105,25 +105,25 @@ export default {
             let tmp = this.foodList[index - 1]
             this.foodList[index - 1] = food
             this.foodList[index] = tmp
-            index--
           } else if(food.likeCount + 1 == this.foodList[index - 1].likeCount) {
             return
           }
+          index--          
         }
       } else if(type == "unlike") {
         this.UNLIKE(food.id)
         while (1) {
-          if (index == this.foodList.length) {
+          if (index == this.foodList.length - 1) {
             return
           }
-          if (food.likeCount < this.foodList[index + 1].likeCount) {
+          if (food.likeCount - 1 < this.foodList[index + 1].likeCount) {
             let tmp = this.foodList[index + 1]
             this.foodList[index + 1] = food
             this.foodList[index] = tmp
-            index++            
-          } else if(food.likeCount + 1 == this.foodList[index + 1].likeCount) {
+          } else if(food.likeCount - 1 == this.foodList[index + 1].likeCount) {
             return
-          } 
+          }
+          index++          
         }
       } else if (type == "hate") {
         this.HATE(food.id)
