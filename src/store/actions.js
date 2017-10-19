@@ -50,6 +50,7 @@ export const fetchFoods = ({
   state,
   commit
 }) => {
+  return new Promise((resolve, reject) => {
   api.get('/food')
     .then((res) => {
       const email = state.auth.info.email
@@ -60,11 +61,14 @@ export const fetchFoods = ({
             rating: user.data.user.rating
           }
           commit(types.FETCH, data)
+          resolve()
         })
     })
     .catch((err) => {
       console.log(err.message)
+      reject()
     })
+  })
 }
 export const LIKE = ({
   state,

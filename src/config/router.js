@@ -4,6 +4,7 @@ import Router from 'vue-router'
 import Sign from '../components/auth/sign.vue'
 import Search from '../components/main/search.vue'
 import Home from '../components/main/home.vue'
+import Like from '../components/main/like.vue'
 
 Vue.use(Router)
 
@@ -27,6 +28,11 @@ export default new Router({
       path: '/search',
       name: 'search',
       component: Search,
+    },
+    {
+      path: '/like',
+      name: 'like',
+      component: Like,
     },
   ]
 })

@@ -55,15 +55,13 @@ export default {
             pagination.nextPage()
           } else {
           this.FOOD_LIST(foodList)
-            .then((res) => {
-              this.foodList = this.getFoodLists
-              this.fetchFoods()              
-            })
-            .catch((err) => {
-              console.log(err)
-            })
+            .then(() => {
+                this.fetchFoods()
+                .then(() => {
+                  this.foodList = this.getLikeFoodList
+                })
+            })         
           }
-
         } else if (status === daum.maps.services.Status.ZERO_RESULT) {
             console.log('검색 결과가 존재하지 않습니다.')
             return
@@ -73,11 +71,11 @@ export default {
         }
       }
       this.CATEGORY_SEARCH(callback)
-
   },
   computed: {
     ...mapGetters([
       'getFoodLists',
+      'getLikeFoodList',
       'getLatLng'
     ]),
   },
@@ -96,36 +94,12 @@ export default {
       this.index = index
     },
     toggle(type, food, index) {
-      if (type == "like") {
-        this.LIKE(food.id)
-        while (1) {
-          if (index == 0) {
-            return
-          }
-          if (food.likeCount + 1 > this.foodList[index - 1].likeCount) {
-            let tmp = this.foodList[index - 1]
-            this.foodList[index - 1] = food
-            this.foodList[index] = tmp
-          } else if(food.likeCount + 1 == this.foodList[index - 1].likeCount) {
-            return
-          }
-          index--          
-        }
-      } else if(type == "unlike") {
+      if(type == "unlike") {
         this.UNLIKE(food.id)
-        while (1) {
-          if (index == this.foodList.length - 1) {
-            return
-          }
-          if (food.likeCount - 1 < this.foodList[index + 1].likeCount) {
-            let tmp = this.foodList[index + 1]
-            this.foodList[index + 1] = food
-            this.foodList[index] = tmp
-          } else if(food.likeCount - 1 == this.foodList[index + 1].likeCount) {
-            return
-          }
-          index++          
-        }
+        this.fetchFoods()
+        .then(() => {
+          this.foodList = this.getLikeFoodList
+        })
       } else if (type == "hate") {
         this.HATE(food.id)
       } else if (type == "unhate") {
@@ -135,11 +109,11 @@ export default {
     sort(type, index) {
       if(type == "asc") {
         return this.foodList.sort((a, b) => {
-          return a.place_name < b.place_name ? -1 : a.place_name > b.place_name ? 1 : 0
+          return a.place_name - b.place_name ? -1 : a.place_name > b.place_name ? 1 : 0
         })
       } else if (type == "desc") {
         return this.foodList.sort((a, b) => {
-          return a.place_name > b.place_name ? -1 : a.place_name < b.place_name ? 1 : 0
+          return a.place_name - b.place_name ? -1 : a.place_name < b.place_name ? 1 : 0
         })
       }
     },

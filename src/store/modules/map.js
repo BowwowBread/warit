@@ -16,26 +16,13 @@ const state = {
 }
 
 const getters = {
-  getFoodLists: (state) => state.foodList,
-  /**
-   * @param
-   * sort : desc = 내림차순, asc = 오름차순
-   */
-  getFoodList: (state) => {
-    return (sort, index) => {
-      if (sort == "asc") {
-        return state.foodList.sort((a, b) => {
-          if (a.likeCount < b.likeCount) return 1
-          if (a.likeCount > b.likeCount) return -1
-          if (a.likeCount == b.likeCount) return 0
-          return a.likeCount - b.likeCount
-        })
-      } else if (sort == "desc") {
-        return state.foodList.sort((a, b) => {
-          return a.likeCount < b.likeCount ? -1 : a.likeCount > b.likeCount ? 1 : 0
-        })
-      }
-    }
+  getFoodLists: (state) => {
+    return state.foodList
+  },
+  getLikeFoodList: (state) => {
+    return state.foodList.filter((food) => {
+      return food.like == true
+    })
   }
 }
 
@@ -47,38 +34,40 @@ const mutations = {
     const foods = data.foods
     let likes = null
     let hates = null
-    if(data.rating != undefined) {
+    if (data.rating != undefined) {
       likes = data.rating.likes
       hates = data.rating.hates
+    } else {
+      reject()
     }
     state.foodList.forEach((foodData) => {
       foods.forEach((food) => {
-        if(foodData.id == food.id) {
+        if (foodData.id == food.id) {
           foodData.likeCount = food.likeCount
         }
       })
-      if(likes) {
+      if (likes) {
         likes.map((like_id) => {
-          if(foodData.id == like_id) {
+          if (foodData.id == like_id) {
             foodData.like = true
           }
         })
       }
-      if(hates) {
+      if (hates) {
         hates.map((hate_id) => {
-          if(foodData.id == hate_id) {
+          if (foodData.id == hate_id) {
             foodData.hate = true
           }
         })
       }
     })
-    return state.foodList.sort((a, b) => {
-      return b.likeCount - a.likeCount    
+    state.foodList.sort((a, b) => {
+      return b.likeCount - a.likeCount
     })
   },
   [types.LIKE](state, data) {
     state.foodList.forEach((foodData) => {
-      if(foodData.id == data.id) {
+      if (foodData.id == data.id) {
         foodData.like = true
         foodData.likeCount = data.likeCount
       }
@@ -86,7 +75,7 @@ const mutations = {
   },
   [types.UNLIKE](state, data) {
     state.foodList.forEach((foodData) => {
-      if(foodData.id == data.id) {
+      if (foodData.id == data.id) {
         foodData.like = false
         foodData.likeCount = data.likeCount
       }
@@ -94,14 +83,14 @@ const mutations = {
   },
   [types.HATE](state, data) {
     state.foodList.forEach((foodData) => {
-      if(foodData.id == data.id) {
+      if (foodData.id == data.id) {
         foodData.hate = true
       }
     })
   },
   [types.UNHATE](state, data) {
     state.foodList.forEach((foodData) => {
-      if(foodData.id == data.id) {
+      if (foodData.id == data.id) {
         foodData.hate = false
       }
     })
@@ -133,8 +122,6 @@ const actions = {
         })
         commit(types.FOOD_LIST, foodList)
         resolve(foodList)
-      } else {
-        reject("err")
       }
     })
   }
