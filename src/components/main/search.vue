@@ -4,9 +4,6 @@
     <button @click="keywordSearch(keyword)">keywordsearch</button>
     <button @click="sort('asc', index)">오름차순</button>
     <button @click="sort('desc', index)">내림차순</button>
-    <button @click="goPage(0)">1</button>
-    <button @click="goPage(1)">2</button>
-    <button @click="goPage(2)">3</button>
     <ul>
       <li v-for="(food, index) in foodList" v-bind:key="food.id">
         <span>{{food.place_name}}</span>
@@ -92,9 +89,6 @@ export default {
       'UNHATE',
       'fetchFoods'
     ]),
-    goPage(index) {
-      this.index = index
-    },
     toggle(type, food, index) {
       if (type == "like") {
         this.LIKE(food.id)

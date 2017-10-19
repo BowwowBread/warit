@@ -64,10 +64,6 @@ export const fetchFoods = ({
           resolve()
         })
     })
-    .catch((err) => {
-      console.log(err.message)
-      reject()
-    })
   })
 }
 export const LIKE = ({
@@ -82,25 +78,22 @@ export const LIKE = ({
           commit(types.LIKE, res.data.food)
         })
     })
-    .catch((err) => {
-      console.log(err)
-    })
 }
 export const UNLIKE = ({
   state,
   commit
 }, id) => {
+  return new Promise((resolve, reject) => {
   api.delete(`/food/like/${id}`)
     .then((res) => {
       const email = state.auth.info.email
       api.delete(`/users/like/${email}/${id}`)
         .then(() => {
           commit(types.UNLIKE, res.data.food)
+          resolve()
         })
     })
-    .catch((err) => {
-      console.log(err)
-    })
+  })
 }
 export const HATE = ({
   state,
@@ -113,12 +106,6 @@ export const HATE = ({
     .then(() => {
       commit(types.HATE, res.data.food)
     })
-    .catch((err) => {
-      console.log(err)
-    })
-  })
-  .catch((err) => {
-    console.log(err)
   })
 }
 export const UNHATE = ({
@@ -132,11 +119,5 @@ export const UNHATE = ({
     .then(() => {
       commit(types.UNHATE, res.data.food)
     })
-    .catch((err) => {
-      console.log(err)
-    })
-  })
-  .catch((err) => {
-    console.log(err)
   })
 }
