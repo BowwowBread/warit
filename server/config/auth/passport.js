@@ -21,9 +21,9 @@ const User = mongoose.model('User')
 
 /**
  * 유저 정보 있을 경우 : 로그인
- * return done(null, user, req.flash('sign-type', 'login'))
+ * return done(null, user)
  * 유저 정보 없을 경우 : 회원가입
- * return done(null, userInfo, req.flash('sign-type', 'signup'))
+ * return done(null, userInfo)
  * 회원가입시 같은 이메일이 존재 할 경우 : 에러
  * return done(uull, null)
  */
@@ -37,7 +37,9 @@ passport.use('kakao', new KakaoStrategy(
       "info.auth_provider": auth_provider
     }, (err, user) => {
       if (user) {
-        return done(null, user, req.flash('sign-type', 'login'))
+        req.flash('sign-type', 'login')
+        req.flash('accessToken', accessToken)
+        return done(null, user)
       } else {
         User.find({
           "info.email": email
@@ -51,7 +53,9 @@ passport.use('kakao', new KakaoStrategy(
                 auth_provider: auth_provider
               }
             }
-            return done(null, userInfo, req.flash('sign-type', 'signup'))
+            req.flash('sign-type', 'signup')
+            req.flash('accessToken', accessToken)           
+            return done(null, userInfo)
           }
         })
       }
@@ -70,7 +74,9 @@ passport.use('facebook', new FacebookStrategy(
       "info.auth_provider": auth_provider
     }, (err, user) => {
       if (user) {
-        return done(null, user, req.flash('sign-type', 'login'))
+        req.flash('sign-type', 'login')
+        req.flash('accessToken', accessToken)
+        return done(null, user)
       } else {
         User.find({
           "info.email": email
@@ -84,7 +90,9 @@ passport.use('facebook', new FacebookStrategy(
                 auth_provider: auth_provider
               }
             }
-            return done(null, userInfo, req.flash('sign-type', 'signup'))
+            req.flash('sign-type', 'signup')
+            req.flash('accessToken', accessToken)           
+            return done(null, userInfo)
           }
         })
       }
@@ -102,7 +110,9 @@ passport.use('google', new GoogleStrategy(
       "info.auth_provider": auth_provider
     }, (err, user) => {
       if (user) {
-        return done(null, user, req.flash('sign-type', 'login'))
+        req.flash('sign-type', 'login')
+        req.flash('accessToken', accessToken)
+        return done(null, user)
       } else {
         User.find({
           "info.email": email
@@ -116,7 +126,9 @@ passport.use('google', new GoogleStrategy(
                 auth_provider: auth_provider
               }
             }
-            return done(null, userInfo, req.flash('sign-type', 'signup'))
+            req.flash('sign-type', 'signup')
+            req.flash('accessToken', accessToken)           
+            return done(null, userInfo)
           }
         })
       }

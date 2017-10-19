@@ -83,6 +83,7 @@
           })
       },
       logout() {
+        Kakao.Auth.logout()        
         this.LOAOUT_AUTH()
           .then((res) => {
             this.email = this.getEmail

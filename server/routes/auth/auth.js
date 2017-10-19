@@ -4,6 +4,7 @@ import passport from 'passport'
 import controller from './auth.controller'
 import loginAuth from '../../config/auth'
 import tokenAuth from '../../config/auth/auth.js'
+import request from 'request'
 
 const router = express.Router()
 
@@ -40,7 +41,8 @@ router.get('/facebook/callback',
 
 router.get('/google',
   passport.authenticate('google', {
-    scope: ['openid', 'email', 'profile']
+    scope: ['openid', 'email', 'profile'],
+    prompt: 'select_account'
   })
 )
 router.get('/google/callback',
@@ -63,6 +65,7 @@ router.get('/', tokenAuth.isAuthenticated(), (req, res) => {
   res.json({
     result: 'success',
     email: req.user.email,
+    accessToken: req.user.accessToken
   })
 })
 export default router

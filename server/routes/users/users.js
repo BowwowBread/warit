@@ -100,7 +100,6 @@ router.get('/auth_success', (req, res) => {
   const signType = req.flash('sign-type')[0]
   const email = req.user.info.email
   const auth_provider = req.user.info.auth_provider
-  console.log(signType)
   if (signType == "login") {
     //로그인 성공
     const secret = req.app.get('jwt-secret')
