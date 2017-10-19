@@ -231,6 +231,50 @@ router.get('/like/:email/:id', (req, res) => {
   controller.unlikeFood(email, id)
     .then(response)
     .catch(error)
-})
+  })
+
+  router.get('/hate/:email/:id', (req, res) => {
+  const email = req.params.email
+  const id = req.params.id
+  const response = user => {
+    res.json({
+      result: 'success hate food.',
+      user: user
+    })
+  }
+
+  const error = err => {
+    res.status(409).json({
+      result: 'failed hate food.',
+      message: err.message
+    })
+  }
+
+  controller.hateFood(email, id)
+    .then(response)
+    .catch(error)
+  })
+
+    router.delete('/hate/:email/:id', (req, res) => {
+  const email = req.params.email
+  const id = req.params.id
+  const response = user => {
+    res.json({
+      result: 'success unhate food.',
+      user: user
+    })
+  }
+
+  const error = err => {
+    res.status(409).json({
+      result: 'failed unhate food.',
+      message: err.message
+    })
+  }
+
+  controller.unhateFood(email, id)
+    .then(response)
+    .catch(error)
+  })
 
 export default router

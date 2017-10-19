@@ -58,6 +58,7 @@ export default {
             .then((res) => {
               this.foodList = this.getFoodList("asc")
               this.fetchFoods()              
+              console.log(this.foodList)
             })
             .catch((err) => {
               console.log(err)

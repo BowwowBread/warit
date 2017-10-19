@@ -54,4 +54,20 @@ User.unlikeFood = (email, food_id) => {
   )
 }
 
+User.hateFood = (email, food_id) => {
+  return User.findOneAndUpdate(
+    {"info.email" : email},
+    { $push : { "rating.hates" : food_id } },
+    { new : true , strict: false}
+  )
+}
+
+User.unhateFood = (email, food_id) => {
+  return User.findOneAndUpdate(
+    {"info.email" : email},
+    { $pull : { "rating.hates" : food_id } },
+    { new : true , strict: false}
+  )
+}
+
 export default User

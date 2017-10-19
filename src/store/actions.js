@@ -11,7 +11,9 @@ import api from '../api/'
  * keyword : 키워드 (string)
  * callback : 결과 받는 콜백 함수
  */
-export const CATEGORY_SEARCH = ({ getters }, callback) => {
+export const CATEGORY_SEARCH = ({
+  getters
+}, callback) => {
   const LatLng = getters.getLatLng
   const places = new daum.maps.services.Places()
   const coords = new daum.maps.LatLng(LatLng.lat, LatLng.lng)
@@ -23,9 +25,11 @@ export const CATEGORY_SEARCH = ({ getters }, callback) => {
   })
 }
 
-export const KEYWORD_SEARCH = ({ getters }, arg) => {
+export const KEYWORD_SEARCH = ({
+  getters
+}, arg) => {
   const places = new daum.maps.services.Places()
-  if(arg.global) {
+  if (arg.global) {
     places.keywordSearch(arg.keyword, arg.callback, {
       category_group_code: "FD6",
       useMapCenter: true,
@@ -42,61 +46,91 @@ export const KEYWORD_SEARCH = ({ getters }, arg) => {
     })
   }
 }
-export const fetchFoods = ({ state, commit }) => {
+export const fetchFoods = ({
+  state,
+  commit
+}) => {
   api.get('/food')
-  .then((res) => {
-    const email = state.auth.info.email
-    api.get(`/users/search/${email}`)
-      .then((user) => {
-        const data = {
-          foods: res.data.foods,
-          rating: user.data.user.rating
-        }
-        commit(types.FETCH, data)
-      })
-  })
-  .catch((err) => {
-    console.log(err.message)
-  })
+    .then((res) => {
+      const email = state.auth.info.email
+      api.get(`/users/search/${email}`)
+        .then((user) => {
+          const data = {
+            foods: res.data.foods,
+            rating: user.data.user.rating
+          }
+          commit(types.FETCH, data)
+        })
+    })
+    .catch((err) => {
+      console.log(err.message)
+    })
 }
-export const LIKE = ({ state, commit }, id) => {
+export const LIKE = ({
+  state,
+  commit
+}, id) => {
   api.get(`/food/like/${id}`)
-  .then((res) => {
-    const email = state.auth.info.email
-    api.get(`/users/like/${email}/${id}`)
-      .then(() => {
-        commit(types.LIKE, res.data.food)
-      })
-  })
-  .catch((err) => {
-    console.log(err)
-  })
+    .then((res) => {
+      const email = state.auth.info.email
+      api.get(`/users/like/${email}/${id}`)
+        .then(() => {
+          commit(types.LIKE, res.data.food)
+        })
+    })
+    .catch((err) => {
+      console.log(err)
+    })
 }
-export const UNLIKE = ({ state, commit }, id) => {
+export const UNLIKE = ({
+  state,
+  commit
+}, id) => {
   api.delete(`/food/like/${id}`)
-  .then((res) => {
-    const email = state.auth.info.email
-    api.delete(`/users/like/${email}/${id}`)
-      .then(() => {
-        commit(types.UNLIKE, res.data.food)
-      })
-  })
-  .catch((err) => {
-    console.log(err)
-  })
+    .then((res) => {
+      const email = state.auth.info.email
+      api.delete(`/users/like/${email}/${id}`)
+        .then(() => {
+          commit(types.UNLIKE, res.data.food)
+        })
+    })
+    .catch((err) => {
+      console.log(err)
+    })
 }
-export const HATE = ({ commit }, id) => {
+export const HATE = ({
+  state,
+  commit
+}, id) => {
   api.get(`/food/hate/${id}`)
   .then((res) => {
+  const email = state.auth.info.email
+  api.get(`/users/hate/${email}/${id}`)
+    .then(() => {
+      commit(types.HATE, res.data.food)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
   })
   .catch((err) => {
     console.log(err)
   })
 }
-export const UNHATE = ({ commit }, id) => {
-  api.get(`/food/unhate/${id}`)
+export const UNHATE = ({
+  state,
+  commit
+}, id) => {
+  api.delete(`/food/hate/${id}`)
   .then((res) => {
-    console.log(res)
+  const email = state.auth.info.email
+  api.delete(`/users/hate/${email}/${id}`)
+    .then(() => {
+      commit(types.UNHATE, res.data.food)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
   })
   .catch((err) => {
     console.log(err)

@@ -46,20 +46,28 @@ const mutations = {
   [types.FETCH](state, data) {
     const foods = data.foods
     let likes = null
+    let hates = null
     if(data.rating != undefined) {
       likes = data.rating.likes
+      hates = data.rating.hates
     }
     state.foodList.forEach((foodData) => {
       foods.forEach((food) => {
         if(foodData.id == food.id) {
           foodData.likeCount = food.likeCount
-          foodData.hate = food.hate
         }
       })
       if(likes) {
         likes.map((like_id) => {
           if(foodData.id == like_id) {
             foodData.like = true
+          }
+        })
+      }
+      if(hates) {
+        hates.map((hate_id) => {
+          if(foodData.id == hate_id) {
+            foodData.hate = true
           }
         })
       }
@@ -87,15 +95,14 @@ const mutations = {
   [types.HATE](state, data) {
     state.foodList.forEach((foodData) => {
       if(foodData.id == data.id) {
-        foodData.hate = data.hate
+        foodData.hate = true
       }
     })
   },
   [types.UNHATE](state, data) {
     state.foodList.forEach((foodData) => {
-      const index = foodData.findIndex((food) => food.id == data.id)
-      if(index != -1) {
-        foodData[index].hate = data.hate
+      if(foodData.id == data.id) {
+        foodData.hate = false
       }
     })
   }
