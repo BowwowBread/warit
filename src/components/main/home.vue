@@ -3,7 +3,6 @@
     <button @click="updateLocation">현재위치</button>    
     키워드<input type="text" v-model="keyword">    
     <button @click="keywordSearch(keyword)">keywordsearch</button>
-    <button @click="categorySearch">categorysearch</button>
     <div id="map"></div>
   </div>
 </template>
@@ -35,6 +34,8 @@
       .then((CurLatLng) => {
         this.CurLatLng = CurLatLng
         this.LatLng = this.getLatLng
+        this.updateMap()
+        this.categorySearch()
       })
     },
     computed: {
@@ -43,16 +44,6 @@
         'getCurLatLng',
         'getFoodLists'
       ]),
-    },
-    watch: {
-      LatLng(newVal, oldVal) {
-        if(newVal.lat == oldVal.lat && newVal.lng == oldVal.lng) {
-          this.moveCenter()                        
-        } else {
-          this.updateMap()
-          this.categorySearch()
-        }
-      },
     },
     methods: {
       ...mapActions([

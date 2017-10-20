@@ -1,11 +1,10 @@
 <template>
   <div id="search">
-    키워드<input type="text" v-model="keyword">    
-    <button @click="keywordSearch(keyword)">keywordsearch</button>
+    검색 <input v-on:input="searching" v-bind:value="search">
     <button @click="sort('asc', index)">오름차순</button>
     <button @click="sort('desc', index)">내림차순</button>
     <ul>
-      <li v-for="(food, index) in foodList" v-bind:key="food.id">
+      <li v-for="(food, index) in foodLists" v-bind:key="food.id">
         <span>{{food.place_name}}</span>
         <!-- <span>{{food.category_name}}</span> -->
         <!-- <span>{{food.distance}}</span> -->
@@ -32,6 +31,7 @@ export default {
   name: 'search',
   data() {
     return {
+      search: "",
       keyword: "",
       foodList: [],
       index: 0,
@@ -48,6 +48,11 @@ export default {
     this.foodList = this.getLikeFoodList      
   },
   computed: {
+    foodLists() {
+      return  this.foodList.filter((food) =>{
+        return food.place_name.toLowerCase().indexOf(this.search.toLowerCase())>=0;
+      })
+    },
     ...mapGetters([
       'getLikeFoodList',
       'getLatLng'
@@ -61,6 +66,9 @@ export default {
       'UNHATE',
       'fetchFoods'
     ]),
+    searching(search) {
+      this.search = search.target.value
+    },
     toggle(type, food, index) {
       if(type == "unlike") {
         this.UNLIKE(food.id)
