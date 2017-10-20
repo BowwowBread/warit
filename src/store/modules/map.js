@@ -37,9 +37,7 @@ const mutations = {
     if (data.rating != undefined) {
       likes = data.rating.likes
       hates = data.rating.hates
-    } else {
-      reject()
-    }
+    } 
     state.foodList.forEach((foodData) => {
       foods.forEach((food) => {
         if (foodData.id == food.id) {

@@ -46,6 +46,7 @@ export default {
     }
     let foodList = []      
     this.foodList = this.getLikeFoodList      
+    this.fetchFoods()
   },
   computed: {
     foodLists() {
