@@ -44,43 +44,17 @@ export default {
         path: '/'
       })
     }
-    let foodList = []            
-    const callback = (result, status, pagination) => {
-        if (status === daum.maps.services.Status.OK) {
-          foodList.push(result)
-          if (pagination.hasNextPage) {
-            pagination.nextPage()
-          } else {
-          this.FOOD_LIST(foodList)
-            .then(() => {
-                this.fetchFoods()
-                .then(() => {
-                  this.foodList = this.getLikeFoodList
-                })
-            })         
-          }
-        } else if (status === daum.maps.services.Status.ZERO_RESULT) {
-            console.log('검색 결과가 존재하지 않습니다.')
-            return
-        } else if (status === daum.maps.services.Status.ERROR) {
-            console.log('검색 결과 중 오류가 발생했습니다.')
-            return
-        }
-      }
-      this.CATEGORY_SEARCH(callback)
+    let foodList = []      
+    this.foodList = this.getLikeFoodList      
   },
   computed: {
     ...mapGetters([
-      'getFoodLists',
       'getLikeFoodList',
       'getLatLng'
     ]),
   },
   methods: {
     ...mapActions([
-      'CATEGORY_SEARCH',
-      'KEYWORD_SEARCH',
-      'FOOD_LIST',
       'LIKE',
       'UNLIKE',
       'HATE',
@@ -113,37 +87,6 @@ export default {
         })
       }
     },
-    keywordSearch(keyword) {
-      let foodList = []      
-      const callback = (result, status, pagination) => {
-          if (status === daum.maps.services.Status.OK) {
-            foodList.push(result)
-            if (pagination.hasNextPage) {
-              pagination.nextPage()
-            } else {
-            this.FOOD_LIST(foodList)
-              .then((res) => {
-                this.foodList = this.getFoodList("asc")
-              })
-              .catch((err) => {
-                console.log(err)
-              })
-            }
-
-          } else if (status === daum.maps.services.Status.ZERO_RESULT) {
-              console.log('검색 결과가 존재하지 않습니다.')
-              return
-          } else if (status === daum.maps.services.Status.ERROR) {
-              console.log('검색 결과 중 오류가 발생했습니다.')
-              return
-          }
-        }
-        this.KEYWORD_SEARCH({
-          callback,
-          keyword,
-          global: false
-        })
-    }
   }
 }
 </script>

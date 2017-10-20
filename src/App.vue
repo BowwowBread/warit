@@ -52,15 +52,13 @@
       ...mapActions([
         'TOKEN_AUTH',
         'LOAOUT_AUTH',
-        'UPDATE_LOCATION'
+        'UPDATE_LOCATION',
+        'SET_LOCATION'
       ]),
       updateLocation() {
         this.UPDATE_LOCATION()
-          .then((res) => {
-            this.LatLng = this.getLatLng
-          })
-          .catch((err) => {
-            console.log(err)
+          .then((CurLatLng) => {
+            this.SET_LOCATION(CurLatLng)
           })
       },
       tokenAuth() {

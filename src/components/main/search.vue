@@ -1,7 +1,6 @@
 <template>
   <div id="search">
-    키워드<input type="text" v-model="keyword">    
-    <button @click="keywordSearch(keyword)">keywordsearch</button>
+    검색<input type="text" v-model="search">    
     <button @click="sort('asc', index)">오름차순</button>
     <button @click="sort('desc', index)">내림차순</button>
     <ul>
@@ -32,7 +31,7 @@ export default {
   name: 'search',
   data() {
     return {
-      keyword: "",
+      search: "",
       foodList: [],
       index: 0,
     }
@@ -44,33 +43,8 @@ export default {
         path: '/'
       })
     }
-    let foodList = []            
-    const callback = (result, status, pagination) => {
-        if (status === daum.maps.services.Status.OK) {
-          foodList.push(result)
-          if (pagination.hasNextPage) {
-            pagination.nextPage()
-          } else {
-          this.FOOD_LIST(foodList)
-            .then((res) => {
-              this.foodList = this.getFoodLists
-              this.fetchFoods()              
-            })
-            .catch((err) => {
-              console.log(err)
-            })
-          }
-
-        } else if (status === daum.maps.services.Status.ZERO_RESULT) {
-            console.log('검색 결과가 존재하지 않습니다.')
-            return
-        } else if (status === daum.maps.services.Status.ERROR) {
-            console.log('검색 결과 중 오류가 발생했습니다.')
-            return
-        }
-      }
-      this.CATEGORY_SEARCH(callback)
-
+    let foodList = []           
+    this.foodList = this.getFoodLists 
   },
   computed: {
     ...mapGetters([
@@ -80,9 +54,6 @@ export default {
   },
   methods: {
     ...mapActions([
-      'CATEGORY_SEARCH',
-      'KEYWORD_SEARCH',
-      'FOOD_LIST',
       'LIKE',
       'UNLIKE',
       'HATE',
@@ -137,37 +108,6 @@ export default {
         })
       }
     },
-    keywordSearch(keyword) {
-      let foodList = []      
-      const callback = (result, status, pagination) => {
-          if (status === daum.maps.services.Status.OK) {
-            foodList.push(result)
-            if (pagination.hasNextPage) {
-              pagination.nextPage()
-            } else {
-            this.FOOD_LIST(foodList)
-              .then((res) => {
-                this.foodList = this.getFoodList("asc")
-              })
-              .catch((err) => {
-                console.log(err)
-              })
-            }
-
-          } else if (status === daum.maps.services.Status.ZERO_RESULT) {
-              console.log('검색 결과가 존재하지 않습니다.')
-              return
-          } else if (status === daum.maps.services.Status.ERROR) {
-              console.log('검색 결과 중 오류가 발생했습니다.')
-              return
-          }
-        }
-        this.KEYWORD_SEARCH({
-          callback,
-          keyword,
-          global: false
-        })
-    }
   }
 }
 </script>
