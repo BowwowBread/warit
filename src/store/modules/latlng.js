@@ -36,6 +36,9 @@ const actions = {
           lat : pos.coords.latitude,
           lng : pos.coords.longitude
         }
+        if(state.CurLatLng.lat == state.LatLng.lat) {
+          commit(types.SET_LOCATION, CurLatLng)
+        }
         commit(types.UPDATE_LOCATION, CurLatLng)
         resolve(CurLatLng)
       }, (err) => {

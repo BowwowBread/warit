@@ -34,8 +34,18 @@
       .then((CurLatLng) => {
         this.CurLatLng = CurLatLng
         this.LatLng = this.getLatLng
-        this.updateMap()
+        this.updateMap()        
+        if(this.CurLatLng.lat == this.LatLng.lat) {
         this.categorySearch()
+        } else {
+          const bounds = new daum.maps.LatLngBounds()                        
+          const foodList = this.getFoodLists
+          foodList.forEach((foodData) => {
+            this.displayMarker(foodData)
+            bounds.extend(new daum.maps.LatLng(foodData.y, foodData.x))
+          })
+          this.map.setBounds(bounds)
+        }
       })
     },
     computed: {
@@ -51,7 +61,8 @@
         'SET_LOCATION',
         'CATEGORY_SEARCH',
         'KEYWORD_SEARCH',
-        'FOOD_LIST'
+        'FOOD_LIST',
+        'fetchFoods'
       ]),
       updateLocation() {
       this.UPDATE_LOCATION()
@@ -59,9 +70,6 @@
           this.CurLatLng = CurLatLng
           const center = new daum.maps.LatLng(this.CurLatLng.lat, this.CurLatLng.lng)
           this.map.panTo(center)                            
-        })
-        .catch((err) => {
-          console.log(err)
         })
       },
       updateMap() {
@@ -107,7 +115,6 @@
                     bounds.extend(new daum.maps.LatLng(foodData.y, foodData.x))
                 })
                 this.map.setBounds(bounds)
-                console.log(this.map.getCenter())
                 const LatLng = {
                   lat : this.map.getCenter().getLat(),
                   lng : this.map.getCenter().getLng()

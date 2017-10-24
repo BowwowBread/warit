@@ -5,6 +5,7 @@ import Sign from '../components/auth/sign.vue'
 import Search from '../components/main/search.vue'
 import Home from '../components/main/home.vue'
 import Like from '../components/main/like.vue'
+import Ranking from '../components/main/ranking.vue'
 
 Vue.use(Router)
 
@@ -13,8 +14,7 @@ export default new Router({
   scrollBehavior: () => ({
     y: 0
   }),
-  routes: [
-    {
+  routes: [{
       path: '/',
       name: 'home',
       component: Home,
@@ -33,6 +33,11 @@ export default new Router({
       path: '/like',
       name: 'like',
       component: Like,
+    },
+    {
+      path: '/ranking',
+      name: 'ranking',
+      component: Ranking,
     },
   ]
 })

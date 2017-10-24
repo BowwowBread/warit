@@ -1,5 +1,5 @@
 <template>
-  <div id="search">
+  <div id="ranking">
     검색 <input v-on:input="searching" v-bind:value="search">
     <button @click="sort('asc', index)">오름차순</button>
     <button @click="sort('desc', index)">내림차순</button>
@@ -28,10 +28,11 @@
     mapActions
   } from 'vuex'
 export default {
-  name: 'search',
+  name: 'ranking',
   data() {
     return {
-      search: '',
+      search: "",
+      keyword: "",
       foodList: [],
       index: 0,
     }
@@ -45,12 +46,13 @@ export default {
     }
     this.fetchFoods()
     .then(() => {
-      this.foodList = this.getFoodLists
-
-    })
+      this.foodList = this.getFoodLists.filter((food, i) => {
+        return i < 10
+      })
+    })  
   },
   computed: {
-    foodLists() {
+   foodLists() {
       return  this.foodList.filter((food) =>{
         return food.place_name.toLowerCase().indexOf(this.search.toLowerCase())>=0;
       })
@@ -95,11 +97,14 @@ export default {
           if (index == this.foodLists.length - 1) {
             return
           }
-          if (food.likeCount - 1 < this.foodLists[index + 1].likeCount) {
+          if (food.likeCount - 1 < this.foodLists[index + 1].likeCount || food.distance > this.foodList[index].distance) {
             let tmp = this.foodLists[index + 1]
             this.foodLists[index + 1] = food
             this.foodLists[index] = tmp
           } 
+          if(food.distance <= this.foodLists[index + 2].distance) {
+            return
+          }
           index++          
         }
       } else if (type == "hate") {
@@ -110,12 +115,12 @@ export default {
     },
     sort(type, index) {
       if(type == "asc") {
-        return this.foodLists.sort((a, b) => {
-          return a.place_name < b.place_name ? -1 : a.place_name > b.place_name ? 1 : 0
+        return this.foodList.sort((a, b) => {
+          return a.place_name - b.place_name ? -1 : a.place_name > b.place_name ? 1 : 0
         })
       } else if (type == "desc") {
-        return this.foodLists.sort((a, b) => {
-          return a.place_name > b.place_name ? -1 : a.place_name < b.place_name ? 1 : 0
+        return this.foodList.sort((a, b) => {
+          return a.place_name - b.place_name ? -1 : a.place_name < b.place_name ? 1 : 0
         })
       }
     },

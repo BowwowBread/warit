@@ -11,7 +11,7 @@ const state = {
     address: "",
     like: false,
     likeCount: 0,
-    hate: false
+    hate: false,
   }]
 }
 
@@ -23,7 +23,7 @@ const getters = {
     return state.foodList.filter((food) => {
       return food.like == true
     })
-  }
+  },
 }
 
 const mutations = {
@@ -37,8 +37,8 @@ const mutations = {
     if (data.rating != undefined) {
       likes = data.rating.likes
       hates = data.rating.hates
-    } 
-    state.foodList.forEach((foodData) => {
+    }
+    state.foodList.forEach((foodData, i) => {
       foods.forEach((food) => {
         if (foodData.id == food.id) {
           foodData.likeCount = food.likeCount
@@ -58,9 +58,18 @@ const mutations = {
           }
         })
       }
+      if(i == state.foodList.length - 1) {
+        return
+      }
     })
-    state.foodList.sort((a, b) => {
-      return b.likeCount - a.likeCount
+    state.foodList.forEach((food_A, i) => {
+      state.foodList.forEach((food_B, j) => {
+        if(j == state.foodList.length - 1) return
+        if(food_B.likeCount < state.foodList[j + 1].likeCount) {
+          state.foodList[j] = state.foodList[j + 1]
+          state.foodList[j + 1] = food_B
+        }
+      })
     })
   },
   [types.LIKE](state, data) {

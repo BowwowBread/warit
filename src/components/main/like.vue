@@ -1,5 +1,5 @@
 <template>
-  <div id="search">
+  <div id="like">
     검색 <input v-on:input="searching" v-bind:value="search">
     <button @click="sort('asc', index)">오름차순</button>
     <button @click="sort('desc', index)">내림차순</button>
@@ -28,7 +28,7 @@
     mapActions
   } from 'vuex'
 export default {
-  name: 'search',
+  name: 'like',
   data() {
     return {
       search: "",
@@ -44,9 +44,10 @@ export default {
         path: '/'
       })
     }
-    let foodList = []      
-    this.foodList = this.getLikeFoodList      
     this.fetchFoods()
+    .then(() => {
+      this.foodList = this.getLikeFoodList
+    })
   },
   computed: {
     foodLists() {

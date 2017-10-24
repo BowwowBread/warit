@@ -58,7 +58,7 @@
       updateLocation() {
         this.UPDATE_LOCATION()
           .then((CurLatLng) => {
-            this.SET_LOCATION(CurLatLng)
+            // this.SET_LOCATION(CurLatLng)
           })
       },
       tokenAuth() {

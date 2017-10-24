@@ -42,45 +42,7 @@ router.get('/like/:id', (req, res) => {
     .then(response)
     .catch(error)
 })
-router.get('/hate/:id', (req, res) => {
-  const id = req.params.id
-  const response = food => {
-    res.json({
-      result: 'success hate food.',
-      food: food
-    })
-  }
 
-  const error = err => {
-    res.status(409).json({
-      result: 'failed hate food.',
-      message: err.message
-    })
-  }
-
-  controller.hateFood(id)
-    .then(response)
-    .catch(error)
-
-  })
-router.delete('/', (req, res) => {
-  const response = food => {
-    res.json({
-      result: 'remove all food.',
-    })
-  }
-
-  const error = err => {
-    res.status(409).json({
-      result: 'failed remove all food.',
-      message: err.message
-    })
-  }
-
-  controller.removeFoods()
-    .then(response)
-    .catch(error)
-})
 router.delete('/like/:id', (req, res) => {
   const id = req.params.id
   const response = food => {
@@ -101,6 +63,29 @@ router.delete('/like/:id', (req, res) => {
     .then(response)
     .catch(error)
 })
+router.get('/hate/:id', (req, res) => {
+  const id = req.params.id
+  const response = food => {
+    res.json({
+      result: 'success hate food.',
+      food: food
+    })
+  }
+
+  const error = err => {
+    res.status(409).json({
+      result: 'failed hate food.',
+      message: err.message
+    })
+  }
+
+  controller.hateFood(id)
+    .then(response)
+    .catch(error)
+
+})
+
+
 router.delete('/hate/:id', (req, res) => {
   const id = req.params.id
   const response = food => {
@@ -118,6 +103,25 @@ router.delete('/hate/:id', (req, res) => {
   }
 
   controller.unhateFood(id)
+    .then(response)
+    .catch(error)
+})
+
+router.delete('/', (req, res) => {
+  const response = food => {
+    res.json({
+      result: 'remove all food.',
+    })
+  }
+
+  const error = err => {
+    res.status(409).json({
+      result: 'failed remove all food.',
+      message: err.message
+    })
+  }
+
+  controller.removeFoods()
     .then(response)
     .catch(error)
 })
