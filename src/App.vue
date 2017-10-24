@@ -1,9 +1,25 @@
 <template>
   <div id="app">
-    <nav-bar></nav-bar>
-    </p>
-    <router-view></router-view>
-    {{email}}
+    <div class="hero is-danger">
+      <div class="hero-body">
+        <div class="container">
+          <div class="columns level">
+          <div class="column is-2 level-left">
+            <div class="title has-text-centered">
+              <router-link to="/">WARIT</router-link>
+            </div>
+          </div>
+          <div class="column is-8 level-right columns is-hidden-mobile">
+            <div class="level-item column has-text-centered"><router-link to="/search">검색</router-link></div>
+            <div class="level-item column has-text-centered"><router-link to="/ranking">랭킹</router-link></div>
+            <div class="level-item column has-text-centered"><router-link to="/like">즐겨찾기</router-link></div>
+            <div class="level-item column has-text-centered"><router-link to="/myinfo">정보</router-link></div>  
+          </div>
+          </div>
+        </div>
+        </div>
+    </div>
+    <router-view class="container router-view"></router-view>
   </div>
 </template>
 
@@ -12,12 +28,8 @@
     mapGetters,
     mapActions
   } from 'vuex'
-  import menu from './components/shared/menu.vue'
   export default {
     name: 'app',
-    components: {
-      navBar: menu,
-    },
     data() {
       return {
         email: null,

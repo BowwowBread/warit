@@ -1,8 +1,21 @@
 <template>
   <div id="home">
-    <button @click="updateLocation">현재위치</button>    
-    키워드<input type="text" v-model="keyword">    
-    <button @click="keywordSearch(keyword)">keywordsearch</button>
+    <div class="form">
+      <div class="level">
+        <div class="level-left">
+    <button class="button is-primary" @click="updateLocation">현재위치</button>    
+    </div>
+    <div class="level-right">
+      <b-field>
+        <b-input v-if="!loading"v-model="keyword" placeholder="지역 검색" type="search" icon="search"></b-input>
+        <b-input v-else v-model="keyword" placeholder="지역 검색" loading type="search" icon="search"></b-input>        
+        <p class="control">
+          <button class="button is-primary" @click="keywordSearch(keyword)">검색</button>
+        </p>
+      </b-field>
+    </div>
+    </div>
+    </div>
     <div id="map"></div>
   </div>
 </template>
@@ -18,6 +31,7 @@
       return {
         map: null,
         markers: [],
+        loading: false,
         LatLng: {
           lat: 0,
           lng: 0,
@@ -69,7 +83,9 @@
         .then((CurLatLng) => {
           this.CurLatLng = CurLatLng
           const center = new daum.maps.LatLng(this.CurLatLng.lat, this.CurLatLng.lng)
-          this.map.panTo(center)                            
+          this.map.setLevel(3)          
+          this.map.panTo(center)                    
+          console.log(this.map.getLevel())
         })
       },
       updateMap() {
@@ -92,13 +108,9 @@
 
           infowindow.open(this.map, marker)
       },
-      moveCenter() {
-        const center = new daum.maps.LatLng(this.LatLng.lat, this.LatLng.lng)
-        this.map.setLevel(2) // 지도 레벨 변경
-        this.map.panTo(center) // 자도 중심으로 부드럽게 이동
-      },
       keywordSearch(keyword) {
         let foodList = []      
+        this.loading = true        
         const callback = (result, status, pagination) => {
           if (status === daum.maps.services.Status.OK) {
             this.clearMarker()            
@@ -120,6 +132,7 @@
                   lng : this.map.getCenter().getLng()
                 }
                 this.SET_LOCATION(LatLng)
+                this.loading = false
               })
               .catch((err) => {
                 console.log(err)
@@ -207,10 +220,5 @@
   }
 </script>
 
-<style scoped>
-  #map {
-    width: 500px;
-    height: 400px;
-  }
-</style>
+<style src="../../assets/css/home.scss" scoped>
 

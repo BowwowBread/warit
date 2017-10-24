@@ -1,5 +1,6 @@
 <template>
   <div id="myinfo">
+    
     <button @click="logout">logout</button>
     <button @click="unregister_user">unregister</button>    
   </div>
@@ -14,8 +15,8 @@
     name: 'myinfo',
     data() {
       return {
-
-      }
+        email: null
+      } 
     },
     created() {
 
@@ -46,7 +47,6 @@
       },
       unregister_user() {
         Kakao.Auth.logout()        
-        const email = this.getInfo.email
         this.UNREGISTER(email)
           .then((res) => {
             this.$cookie.delete('email')
