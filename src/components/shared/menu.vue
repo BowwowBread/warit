@@ -10,7 +10,7 @@
           <li><router-link to="/search">검색</router-link></li>
           <li><router-link to="/like">즐겨찾기</router-link></li>
           <li><router-link to="/ranking">랭킹</router-link></li>
-          <li><router-link to="/info">정보</router-link></li>  
+          <li><router-link to="/myinfo">정보</router-link></li>  
         </ul>
       </div>
     </div>

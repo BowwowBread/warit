@@ -58,14 +58,14 @@ const mutations = {
           }
         })
       }
-      if(i == state.foodList.length - 1) {
+      if (i == state.foodList.length - 1) {
         return
       }
     })
     state.foodList.forEach((food_A, i) => {
       state.foodList.forEach((food_B, j) => {
-        if(j == state.foodList.length - 1) return
-        if(food_B.likeCount < state.foodList[j + 1].likeCount) {
+        if (j == state.foodList.length - 1) return
+        if (state.foodList[j].likeCount < state.foodList[j + 1].likeCount) {
           state.foodList[j] = state.foodList[j + 1]
           state.foodList[j + 1] = food_B
         }
@@ -73,7 +73,7 @@ const mutations = {
     })
   },
   [types.LIKE](state, data) {
-    state.foodList.forEach((foodData) => {
+    state.foodList.forEach((foodData, i) => {
       if (foodData.id == data.id) {
         foodData.like = true
         foodData.likeCount = data.likeCount
@@ -101,7 +101,7 @@ const mutations = {
         foodData.hate = false
       }
     })
-  }
+  },
 }
 
 const actions = {

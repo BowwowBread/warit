@@ -8,7 +8,15 @@ const state = {
 }
 
 const getters = {
-  getInfo: state => state.info,
+  getInfo: (state) => {
+    return new Promise((resolve, reject) => {
+      if(state.info.token != null) {
+        resolve(state.info)
+      } else {
+        reject()
+      }
+    })
+  }
 }
 
 const mutations = {
@@ -17,6 +25,9 @@ const mutations = {
     return state.info = info
   },
   [types.LOAOUT_AUTH](state) {
+    return state.info = null
+  },
+  [types.UNREGISTER](state) {
     return state.info = null
   }
 }
@@ -48,6 +59,18 @@ const actions = {
       api.get('/auth/logout')
         .then((res) => {
           commit(types.LOAOUT_AUTH)
+          resolve(res)
+        })
+        .catch((err) => {
+          reject(err)
+        })
+    })
+  },
+  [types.UNREGISTER]({commit}, email) {
+    return new Promise((resolve, reject) => {
+      api.delete(`/users/${email}`)
+        .then((res) => {
+          commit(types.UNREGISTER)
           resolve(res)
         })
         .catch((err) => {

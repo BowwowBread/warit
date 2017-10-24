@@ -31,7 +31,7 @@ User.registerUser = (userInfo) => {
  */
 
 User.removeUserByemail = (email) => {
-  return User.findOneAndRemove(email)
+  return User.findOneAndRemove({"info.email": email})
 }
 
 User.removeAllUser = () => {

@@ -1,11 +1,6 @@
 <template>
   <div id="app">
     <nav-bar></nav-bar>
-    <div v-if="email == null" class="sign">
-    </div>
-    <div v-else>
-      <button @click="logout">logout</button>
-    </div>
     </p>
     <router-view></router-view>
     {{email}}
@@ -26,7 +21,6 @@
     data() {
       return {
         email: null,
-        token: null,
         LatLng: {
           lat: 0,
           lng: 0,
@@ -51,7 +45,6 @@
     methods: {
       ...mapActions([
         'TOKEN_AUTH',
-        'LOAOUT_AUTH',
         'UPDATE_LOCATION',
         'SET_LOCATION'
       ]),
@@ -62,39 +55,34 @@
           })
       },
       tokenAuth() {
-        this.token = this.getInfo.token
-        if(!this.token) {
-          this.token = this.$cookie.get('token')
-        }
-        this.TOKEN_AUTH(this.token)
+        this.email = null
+        this.getInfo
+        .then((info) => {
+          this.TOKEN_AUTH(info.token)
           .then((res) => {
-            this.email = this.getInfo.email
-            this.$cookie.delete('email')
+            this.email = res.email
           })
-          .catch((err) => {
-            console.log(err)
-            this.$cookie.delete('email')
-            this.$cookie.delete('token')
+          .catch(() => {
             this.$router.push({
               path: '/sign'
             })
           })
+        this.$cookie.delete('email')
+        })
+        .catch(() => {
+          this.TOKEN_AUTH(this.$cookie.get('token'))
+            .then((res) => {
+              this.email = res.email
+            })
+            .catch((err) => {
+              this.$router.push({
+                path: '/sign'
+              })
+            })
+          this.$cookie.delete('email')
+        })
+      
       },
-      logout() {
-        Kakao.Auth.logout()        
-        this.LOAOUT_AUTH()
-          .then((res) => {
-            this.email = this.getEmail
-            this.$cookie.delete('email')
-            this.$cookie.delete('token')
-            this.$router.push({
-              path: '/sign'
-            })
-          })
-          .catch((err) => {
-            console.log(err)
-          })
-      }
     }
   }
 </script>

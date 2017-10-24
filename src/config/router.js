@@ -6,6 +6,7 @@ import Search from '../components/main/search.vue'
 import Home from '../components/main/home.vue'
 import Like from '../components/main/like.vue'
 import Ranking from '../components/main/ranking.vue'
+import Myinfo from '../components/main/myinfo.vue'
 
 Vue.use(Router)
 
@@ -39,5 +40,10 @@ export default new Router({
       name: 'ranking',
       component: Ranking,
     },
+    {
+      path: '/myinfo',
+      name: 'myinfo',
+      component: Myinfo
+    }
   ]
 })

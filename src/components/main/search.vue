@@ -1,8 +1,8 @@
 <template>
   <div id="search">
     검색 <input v-on:input="searching" v-bind:value="search">
-    <button @click="sort('asc', index)">오름차순</button>
-    <button @click="sort('desc', index)">내림차순</button>
+    <button @click="sort('asc')">오름차순</button>
+    <button @click="sort('desc')">내림차순</button>
     <ul>
       <li v-for="(food, index) in foodLists" v-bind:key="food.id">
         <span>{{food.place_name}}</span>
@@ -46,13 +46,19 @@ export default {
     this.fetchFoods()
     .then(() => {
       this.foodList = this.getFoodLists
-
     })
   },
   computed: {
     foodLists() {
-      return  this.foodList.filter((food) =>{
-        return food.place_name.toLowerCase().indexOf(this.search.toLowerCase())>=0;
+      function compare(a, b) {
+        if (a.likeCount < b.likeCount)
+          return 1
+        if (a.likeCount > b.likeCount)
+          return -1
+        return 0
+      }
+      return this.foodList.filter((food) => {
+        return food.place_name.toLowerCase().indexOf(this.search.toLowerCase())>=0        
       })
     },
     ...mapGetters([
@@ -71,51 +77,25 @@ export default {
     searching(search) {
       this.search = search.target.value
     },
-    toggle(type, food, index) {
+    toggle(type, food) {
       if (type == "like") {
-        console.log('like')        
         this.LIKE(food.id)
-        while (1) {
-          if (index == 0) {
-            return
-          }
-          if (food.likeCount + 1 > this.foodLists[index - 1].likeCount) {
-            let tmp = this.foodLists[index - 1]
-            this.foodLists[index - 1] = food
-            this.foodLists[index] = tmp
-          } else if(food.likeCount + 1 == this.foodLists[index - 1].likeCount) {
-            return
-          }
-          index--          
-        }
       } else if(type == "unlike") {
-        console.log('unlike')
         this.UNLIKE(food.id)
-        while (1) {
-          if (index == this.foodLists.length - 1) {
-            return
-          }
-          if (food.likeCount - 1 < this.foodLists[index + 1].likeCount) {
-            let tmp = this.foodLists[index + 1]
-            this.foodLists[index + 1] = food
-            this.foodLists[index] = tmp
-          } 
-          index++          
-        }
       } else if (type == "hate") {
         this.HATE(food.id)
       } else if (type == "unhate") {
         this.UNHATE(food.id)
       }
     },
-    sort(type, index) {
+    sort(type) {
       if(type == "asc") {
-        return this.foodLists.sort((a, b) => {
-          return a.place_name < b.place_name ? -1 : a.place_name > b.place_name ? 1 : 0
+        this.foodList.sort((a, b) => {
+          return a.place_name > b.place_name ? 1 : a.place_name < b.place_name ? -1 : 0
         })
       } else if (type == "desc") {
-        return this.foodLists.sort((a, b) => {
-          return a.place_name > b.place_name ? -1 : a.place_name < b.place_name ? 1 : 0
+        this.foodList.sort((a, b) => {
+          return a.place_name < b.place_name ? 1 : a.place_name > b.place_name ? -1 : 0
         })
       }
     },

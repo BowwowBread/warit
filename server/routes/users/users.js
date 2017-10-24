@@ -169,7 +169,7 @@ router.delete('/', (req, res) => {
  */
 router.delete('/:email', (req, res) => {
   const email = req.params.email
-
+  console.log(email)
   const response = user => {
     res.json({
       result: 'success remove user by email ' + email,
@@ -184,7 +184,7 @@ router.delete('/:email', (req, res) => {
     })
   }
 
-  controller.removeUserByEmail(email)
+  controller.removeUserByemail(email)
     .then(response)
     .catch(error)
 })
