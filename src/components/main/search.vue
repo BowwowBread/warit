@@ -1,36 +1,47 @@
 <template>
   <div id="search">
-      <b-table
-            :data="isEmpty ? [] : foodLists"
-            :bordered="isBordered"
-            :striped="isStriped"
-            :narrowed="isNarrowed"
-            :loading="isLoading"
-            :mobile-cards="hasMobileCards">
-
+      <b-field @keydown.native.enter="keywordSearch(keyword)">
+        <b-input v-if="!searchLoading" v-on:input.native="searching" v-model="search" placeholder="음식점 검색" type="search" icon="search"></b-input>
+        <b-input v-else v-on:input.native="searching" v-model="search" placeholder="검색중..." searchLoading type="search" icon="search"></b-input>        
+      </b-field>
+        <b-pagination
+            :total="total"
+            :per-page="perPage"
+            :current.sync="page"
+            :order="order"
+            :size="size"
+            :simple="isSimple"
+            @change="onPageChange"
+            >
+        </b-pagination>
+              <hr>        
+        <b-table
+        :data="foodLists"
+        backend-sorting
+        @sort="onSort"        
+        >
             <template scope="props">
-                <b-table-column label="음식점명">
+                <b-table-column field="place_name" label="음식점명" sortable>
                     {{ props.row.place_name }}
                 </b-table-column>
-                <b-table-column label="카테고리">
+                <b-table-column  label="카테고리">
                     {{ props.row.category_name }}
                 </b-table-column>
                 <b-table-column label="주소">
                     {{ props.row.address }}
                 </b-table-column>
-                <b-table-column label="좋아요 수" centered>
+                <b-table-column field="likeCount" label="좋아요 수" sortable centered>
                     {{ props.row.likeCount }}
                 </b-table-column>
-                <b-table-column label="좋아요">
+                <b-table-column field="like" label="좋아요">
                     <button class="button is-warning" v-if="!props.row.like" @click="toggle('like', props.row)">O</button>
                     <button class="button is-success"v-else @click="toggle('unlike', props.row)">X</button>
                 </b-table-column>
-                <b-table-column label="싫어요">
+                <b-table-column field="hate" label="싫어요">
                     <button class="button is-warning"v-if="!props.row.hate" @click="toggle('hate', props.row)">O</button>        
                     <button class="button is-success" v-else @click="toggle('unhate', props.row)">X</button>  
                 </b-table-column>
             </template>
-
             <template slot="empty">
                 <section class="section">
                     <div class="content has-text-grey has-text-centered">
@@ -40,31 +51,11 @@
                                 size="is-large">
                             </b-icon>
                         </p>
-                        <p>Nothing here.</p>
+                        <p>검색결과가 없습니다.</p>
                     </div>
                 </section>
             </template>
         </b-table>
-    <!-- 검색 <input v-on:input="searching" v-bind:value="search">
-    <button @click="sort('asc')">오름차순</button>
-    <button @click="sort('desc')">내림차순</button>
-    <ul>
-      <li v-for="(food, index) in foodLists" v-bind:key="food.id">
-        <span>{{food.place_name}}</span> -->
-        <!-- <span>{{food.category_name}}</span> -->
-        <!-- <span>{{food.distance}}</span> -->
-        <!-- <span>{{food.address}}</span> -->
-        <!-- <span>{{food.like}}</span>
-        <span>{{food.likeCount}}</span>
-        <span>{{food.hate}}</span>
-        
-        <button v-if="!food.like" @click="toggle('like', food, index)">like</button>
-        <button v-else @click="toggle('unlike', food, index)">unlike</button>
-        <button v-if="!food.hate" @click="toggle('hate', food, index)">hate</button>        
-        <button v-else @click="toggle('unhate', food, index)">unhate</button>        
-        
-      </li>
-    </ul> -->
   </div>
 </template>
 <script>
@@ -76,15 +67,22 @@ export default {
   name: 'search',
   data() {
     return {
+      page: 1,
+      order: 'is-centered',
+      size: 'is-medium',
+      isSimple: false,
       search: '',
       foodList: [],
-      index: 0,
       isEmpty: false,
-      isBordered: false,
-      isStriped: false,
-      isNarrowed: false,
-      isLoading: false,
-      hasMobileCards: true
+      isLoading: true,
+      searchLoading: false,
+      hasMobileCards: true,
+      searchTotal: 0,
+      defaultSortDirection: 'asc',
+      perPage: 10,
+      sortField: 'likeCount',
+      sortOrder: 'desc',
+      defaultSortOrder: 'desc',
     }
   },
   created() {
@@ -94,23 +92,28 @@ export default {
         path: '/'
       })
     }
-    this.fetchFoods()
-    .then(() => {
-      this.foodList = this.getFoodLists
-    })
+    this.fetchFoodList()
   },
   computed: {
     foodLists() {
-      function compare(a, b) {
-        if (a.likeCount < b.likeCount)
-          return 1
-        if (a.likeCount > b.likeCount)
-          return -1
-        return 0
-      }
-      return this.foodList.filter((food) => {
-        return food.place_name.toLowerCase().indexOf(this.search.toLowerCase())>=0        
+      this.searchTotal = 0
+      return this.foodList.filter((food, i, array) => {
+        if(food.place_name.toLowerCase().indexOf(this.search.toLowerCase())>=0) {
+          this.searchTotal += 1
+          return food
+        } else {
+          this.searchTotal = 1
+        }
+      }).filter((food, i) => {
+        return (this.page - 1) * this.perPage <= i && i < (this.page) * this.perPage
       })
+    },
+    total() {
+      if(this.searchTotal != 0) {
+        return this.searchTotal
+      } else {
+        return this.foodList.length
+      }
     },
     ...mapGetters([
       'getFoodLists',
@@ -125,6 +128,43 @@ export default {
       'UNHATE',
       'fetchFoods'
     ]),
+    fetchFoodList() {
+      this.isLoading = true
+      this.fetchFoods()
+      .then(() => {
+      this.foodList = []        
+      this.foodList = this.getFoodLists
+      this.isLoading = false
+      if(this.sortField == "place_name") {
+        this.foodList = this.getFoodLists.sort((a, b) => {
+          if(this.sortOrder == "asc") {
+            return a.place_name > b.place_name ? 1 : a.place_name < b.place_name ? -1 : 0
+          } else if(this.sortOrder == "desc") {
+            return a.place_name < b.place_name ? 1 : a.place_name > b.place_name ? -1 : 0
+          }
+        })
+      } else if(this.sortField == "likeCount") {
+        this.foodList = this.getFoodLists.sort((a, b) => {
+          return a.place_name > b.place_name ? 1 : a.place_name < b.place_name ? -1 : 0
+        }).sort((a, b) => {
+          if(this.sortOrder == "asc") {
+              return a.likeCount < b.likeCount ? 1 : -1
+          } else if(this.sortOrder == "desc") {
+              return a.likeCount > b.likeCount ? 1 : -1    
+          }
+        })
+      }
+    })
+    },
+    onPageChange(page) {
+      this.page = page
+      this.fetchFoodList()
+    },
+    onSort(field, order) {
+      this.sortField = field
+      this.sortOrder = order
+      this.fetchFoodList()
+    },
     searching(search) {
       this.search = search.target.value
     },
@@ -137,17 +177,6 @@ export default {
         this.HATE(food.id)
       } else if (type == "unhate") {
         this.UNHATE(food.id)
-      }
-    },
-    sort(type) {
-      if(type == "asc") {
-        this.foodList.sort((a, b) => {
-          return a.place_name > b.place_name ? 1 : a.place_name < b.place_name ? -1 : 0
-        })
-      } else if (type == "desc") {
-        this.foodList.sort((a, b) => {
-          return a.place_name < b.place_name ? 1 : a.place_name > b.place_name ? -1 : 0
-        })
       }
     },
   }

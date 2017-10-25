@@ -1,25 +1,52 @@
 <template>
   <div id="ranking">
-    검색 <input v-on:input="searching" v-bind:value="search">
-    <button @click="sort('asc')">오름차순</button>
-    <button @click="sort('desc')">내림차순</button>
-    <ul>
-      <li v-for="(food, index) in foodLists" v-bind:key="food.id">
-        <span>{{food.place_name}}</span>
-        <!-- <span>{{food.category_name}}</span> -->
-        <span>{{food.distance}}</span>
-        <!-- <span>{{food.address}}</span> -->
-        <span>{{food.like}}</span>
-        <span>{{food.likeCount}}</span>
-        <span>{{food.hate}}</span>
-        
-        <button v-if="!food.like" @click="toggle('like', food, index)">like</button>
-        <button v-else @click="toggle('unlike', food, index)">unlike</button>
-        <button v-if="!food.hate" @click="toggle('hate', food, index)">hate</button>        
-        <button v-else @click="toggle('unhate', food, index)">unhate</button>        
-        
-      </li>
-    </ul>
+<b-field @keydown.native.enter="keywordSearch(keyword)">
+        <b-input v-if="!searchLoading" v-on:input.native="searching" v-model="search" placeholder="음식점 검색" type="search" icon="search"></b-input>
+        <b-input v-else v-on:input.native="searching" v-model="search" placeholder="검색중..." searchLoading type="search" icon="search"></b-input>        
+      </b-field>
+
+              <hr>        
+        <b-table
+        :data="foodLists"
+        backend-sorting
+        @sort="onSort"        
+        >
+            <template scope="props">
+                <b-table-column field="place_name" label="음식점명" sortable>
+                    {{ props.row.place_name }}
+                </b-table-column>
+                <b-table-column  label="카테고리">
+                    {{ props.row.category_name }}
+                </b-table-column>
+                <b-table-column label="주소">
+                    {{ props.row.address }}
+                </b-table-column>
+                <b-table-column field="likeCount" label="좋아요 수" sortable centered>
+                    {{ props.row.likeCount }}
+                </b-table-column>
+                <b-table-column field="like" label="좋아요">
+                    <button class="button is-warning" v-if="!props.row.like" @click="toggle('like', props.row)">O</button>
+                    <button class="button is-success"v-else @click="toggle('unlike', props.row)">X</button>
+                </b-table-column>
+                <b-table-column field="hate" label="싫어요">
+                    <button class="button is-warning"v-if="!props.row.hate" @click="toggle('hate', props.row)">O</button>        
+                    <button class="button is-success" v-else @click="toggle('unhate', props.row)">X</button>  
+                </b-table-column>
+            </template>
+            <template slot="empty">
+                <section class="section">
+                    <div class="content has-text-grey has-text-centered">
+                        <p>
+                            <b-icon
+                                icon="sentiment_very_dissatisfied"
+                                size="is-large">
+                            </b-icon>
+                        </p>
+                        <p>검색결과가 없습니다.</p>
+                    </div>
+                </section>
+            </template>
+        </b-table>
   </div>
 </template>
 <script>
@@ -32,9 +59,21 @@ export default {
   data() {
     return {
       search: "",
-      keyword: "",
       foodList: [],
-      index: 0,
+      isEmpty: false,
+      isLoading: true,
+      searchLoading: false,
+      hasMobileCards: true,
+      searchTotal: 0,
+      defaultSortDirection: 'asc',
+      perPage: 10,
+      sortField: 'likeCount',
+      sortOrder: 'desc',
+      defaultSortOrder: 'desc',
+      page: 1,
+      order: 'is-centered',
+      size: 'is-medium',
+      isSimple: false,
     }
   },
   created() {

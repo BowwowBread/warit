@@ -5,7 +5,7 @@ function signToken(email, secret) {
   return jwt.sign({
     email: email
   }, secret, {
-    expiresIn: 3600
+    expiresIn: '7d'
   })
 }
 

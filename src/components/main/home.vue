@@ -1,16 +1,17 @@
 <template>
   <div id="home">
+    <b-loading :active.sync="isLoading" :canCancel="true"></b-loading>
     <div class="form">
       <div class="level">
         <div class="level-left">
     <button class="button is-primary" @click="updateLocation">현재위치</button>    
     </div>
     <div class="level-right">
-      <b-field>
+      <b-field @keydown.native.enter="keywordSearch(keyword)">
         <b-input v-if="!loading"v-model="keyword" placeholder="지역 검색" type="search" icon="search"></b-input>
-        <b-input v-else v-model="keyword" placeholder="지역 검색" loading type="search" icon="search"></b-input>        
+        <b-input v-else v-model="keyword" placeholder="검색중..." loading type="search" icon="search"></b-input>        
         <p class="control">
-          <button class="button is-primary" @click="keywordSearch(keyword)">검색</button>
+          <button class="button is-primary" @click="keywordSearch(keyword)" >검색</button>
         </p>
       </b-field>
     </div>
@@ -29,6 +30,7 @@
     name: 'search',
     data() {
       return {
+        isLoading: false,
         map: null,
         markers: [],
         loading: false,
@@ -44,6 +46,7 @@
       }
     },
     created() {
+      this.isLoading = true
       this.UPDATE_LOCATION()
       .then((CurLatLng) => {
         this.CurLatLng = CurLatLng
@@ -60,6 +63,7 @@
           })
           this.map.setBounds(bounds)
         }
+       this.isLoading = false        
       })
     },
     computed: {
@@ -83,7 +87,7 @@
         .then((CurLatLng) => {
           this.CurLatLng = CurLatLng
           const center = new daum.maps.LatLng(this.CurLatLng.lat, this.CurLatLng.lng)
-          this.map.setLevel(3)          
+          this.map.setLevel(2)          
           this.map.panTo(center)                    
           console.log(this.map.getLevel())
         })
@@ -136,13 +140,20 @@
               })
               .catch((err) => {
                 console.log(err)
+                this.loading = false
               })
             }
           } else if (status === daum.maps.services.Status.ZERO_RESULT) {
             console.log('검색 결과가 존재하지 않습니다.')
+            this.loading = false
             return
           } else if (status === daum.maps.services.Status.ERROR) {
             console.log('검색 결과 중 오류가 발생했습니다.')
+            this.loading = false            
+            return
+          } else {
+            console.log('검색 결과 중 오류가 발생했습니다.')            
+            this.loading = false
             return
           }
         }
@@ -172,14 +183,17 @@
                 this.map.setBounds(bounds)
               })
               .catch((err) => {
+                this.loading = false
                 console.log(err)
               })
             }
           } else if (status === daum.maps.services.Status.ZERO_RESULT) {
             console.log('검색 결과가 존재하지 않습니다.')
+            this.loading = false
             return
           } else if (status === daum.maps.services.Status.ERROR) {
             console.log('검색 결과 중 오류가 발생했습니다.')
+            this.loading = false            
             return
           }
         }

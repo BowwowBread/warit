@@ -115,12 +115,12 @@ const actions = {
           foodData.forEach((food) => {
             foodList.push({
               place_name: food.place_name,
-              category_name: food.category_name,
+              category_name: food.category_name.substring(5),
               distance: food.distance,
               id: food.id,
               x: food.x,
               y: food.y,
-              address: food.road_address_name,
+              address: food.road_address_name == "" ? food.address_name : food.road_address_name,
               like: false,
               likeCount: 0,
               hate: false
