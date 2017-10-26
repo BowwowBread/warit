@@ -3,5 +3,11 @@
   padding: 0;
 }
 .router-view {
-  height: calc(100vh - 8.5rem)
+  height: calc(100vh - 5rem)
+}
+.control {
+  margin-top: 1rem;
+}
+#app {
+  min-width: 300px;
 }

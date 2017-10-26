@@ -45,6 +45,7 @@ passport.use('kakao', new KakaoStrategy(
           "info.email": email
         }, (err, users) => {
           if (users.length != 0) {
+            req.flash('sign-type', 'error')
             return done(null, null)
           } else {
             const userInfo = {
@@ -82,6 +83,7 @@ passport.use('facebook', new FacebookStrategy(
           "info.email": email
         }, (err, users) => {
           if (users.length != 0) {
+            req.flash('sign-type', 'error')            
             return done(null, null)
           } else {
             const userInfo = {
@@ -118,6 +120,7 @@ passport.use('google', new GoogleStrategy(
           "info.email": email
         }, (err, users) => {
           if (users.length != 0) {
+            req.flash('sign-type', 'error')            
             return done(null, null)
           } else {
             const userInfo = {

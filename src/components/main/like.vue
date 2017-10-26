@@ -1,25 +1,61 @@
 <template>
   <div id="like">
-    검색 <input v-on:input="searching" v-bind:value="search">
-    <button @click="sort('asc', index)">오름차순</button>
-    <button @click="sort('desc', index)">내림차순</button>
-    <ul>
-      <li v-for="(food, index) in foodLists" v-bind:key="food.id">
-        <span>{{food.place_name}}</span>
-        <!-- <span>{{food.category_name}}</span> -->
-        <!-- <span>{{food.distance}}</span> -->
-        <!-- <span>{{food.address}}</span> -->
-        <span>{{food.like}}</span>
-        <span>{{food.likeCount}}</span>
-        <span>{{food.hate}}</span>
-        
-        <button v-if="!food.like" @click="toggle('like', food, index)">like</button>
-        <button v-else @click="toggle('unlike', food, index)">unlike</button>
-        <button v-if="!food.hate" @click="toggle('hate', food, index)">hate</button>        
-        <button v-else @click="toggle('unhate', food, index)">unhate</button>        
-        
-      </li>
-    </ul>
+    <b-field @keydown.native.enter="keywordSearch(keyword)">
+        <b-input v-if="!searchLoading" v-on:input.native="searching" v-model="search" placeholder="음식점 검색" type="search" icon="search"></b-input>
+        <b-input v-else v-on:input.native="searching" v-model="search" placeholder="검색중..." searchLoading type="search" icon="search"></b-input>        
+      </b-field>
+        <b-pagination
+            :total="total"
+            :per-page="perPage"
+            :current.sync="page"
+            :order="order"
+            :size="size"
+            :simple="isSimple"
+            @change="onPageChange"
+            >
+        </b-pagination>
+              <hr>        
+        <b-table
+        :data="foodLists"
+        backend-sorting
+        @sort="onSort"        
+        >
+            <template scope="props">
+                <b-table-column field="place_name" label="음식점명" sortable width="200">
+                    {{ props.row.place_name }}
+                </b-table-column>
+                <b-table-column  label="카테고리" width="400">
+                    {{ props.row.category_name }}
+                </b-table-column>
+                <b-table-column label="주소" width="300">
+                    {{ props.row.address }}
+                </b-table-column>
+                <b-table-column field="likeCount" label="좋아요 수" sortable centered width="150">
+                    {{ props.row.likeCount }}
+                </b-table-column>
+                <b-table-column field="like" label="좋아요" width="100">
+                    <button class="button is-warning" v-if="!props.row.like" @click="toggle('like', props.row)">O</button>
+                    <button class="button is-success"v-else @click="toggle('unlike', props.row)">X</button>
+                </b-table-column>
+                <b-table-column field="hate" label="싫어요" width="100">
+                    <button class="button is-warning"v-if="!props.row.hate" @click="toggle('hate', props.row)">O</button>        
+                    <button class="button is-success" v-else @click="toggle('unhate', props.row)">X</button>  
+                </b-table-column>
+            </template>
+            <template slot="empty">
+                <section class="section">
+                    <div class="content has-text-grey has-text-centered">
+                        <p>
+                            <b-icon
+                                icon="sentiment_very_dissatisfied"
+                                size="is-large">
+                            </b-icon>
+                        </p>
+                        <p>검색결과가 없습니다.</p>
+                    </div>
+                </section>
+            </template>
+        </b-table>
   </div>
 </template>
 <script>
@@ -32,9 +68,21 @@ export default {
   data() {
     return {
       search: "",
-      keyword: "",
       foodList: [],
-      index: 0,
+      isEmpty: false,
+      isLoading: true,
+      searchLoading: false,
+      hasMobileCards: true,
+      searchTotal: 0,
+      defaultSortDirection: 'asc',
+      perPage: 10,
+      sortField: 'likeCount',
+      sortOrder: 'asc',
+      defaultSortOrder: 'asc',
+      page: 1,
+      order: 'is-centered',
+      size: 'is-medium',
+      isSimple: false,
     }
   },
   created() {
@@ -44,16 +92,28 @@ export default {
         path: '/'
       })
     }
-    this.fetchFoods()
-    .then(() => {
-      this.foodList = this.getLikeFoodList
-    })
+    this.fetchFoodList()
   },
   computed: {
     foodLists() {
-      return  this.foodList.filter((food) =>{
-        return food.place_name.toLowerCase().indexOf(this.search.toLowerCase())>=0;
+      this.searchTotal = 0
+      return this.foodList.filter((food, i, array) => {
+        if(food.place_name.toLowerCase().indexOf(this.search.toLowerCase())>=0) {
+          this.searchTotal += 1
+          return food
+        } else {
+          this.searchTotal = 1
+        }
+      }).filter((food, i) => {
+        return (this.page - 1) * this.perPage <= i && i < (this.page) * this.perPage
       })
+    },
+    total() {
+      if(this.searchTotal != 0) {
+        return this.searchTotal
+      } else {
+        return this.foodList.length
+      }
     },
     ...mapGetters([
       'getLikeFoodList',
@@ -68,35 +128,96 @@ export default {
       'UNHATE',
       'fetchFoods'
     ]),
+    fetchFoodList() {
+      this.isLoading = true
+      this.fetchFoods()
+      .then(() => {
+      this.foodList = this.getLikeFoodList
+      this.isLoading = false
+      if(this.sortField == "place_name") {
+        this.foodList = this.foodList.sort((a, b) => {
+          if(this.sortOrder == "asc") {
+            return a.place_name > b.place_name ? 1 : a.place_name < b.place_name ? -1 : 0
+          } else if(this.sortOrder == "desc") {
+            return a.place_name < b.place_name ? 1 : a.place_name > b.place_name ? -1 : 0
+          }
+        })
+      } else if(this.sortField == "likeCount") {
+        this.foodList = this.foodList.sort((a, b) => {
+          return a.place_name > b.place_name ? 1 : a.place_name < b.place_name ? -1 : 0
+        }).sort((a, b) => {
+          if(this.sortOrder == "asc") {
+              return a.likeCount < b.likeCount ? 1 : -1
+          } else if(this.sortOrder == "desc") {
+              return a.likeCount > b.likeCount ? 1 : -1    
+          }
+        })
+      }
+    })
+    },
+    onPageChange(page) {
+      this.page = page
+      this.fetchFoodList()
+    },
+    onSort(field, order) {
+      this.sortField = field
+      this.sortOrder = order
+      this.fetchFoodList()
+    },
     searching(search) {
       this.search = search.target.value
     },
-    toggle(type, food, index) {
-      if(type == "unlike") {
+    toggle(type, food) {
+      if (type == "like") {
+        this.LIKE(food.id)
+        this.$snackbar.open({
+          message: `${food.place_name} 음식점 좋아요`,
+          duration: 3000,          
+          type: 'is-success',
+          position: 'is-bottom-right',
+          actionText: '취소하기',
+          onAction: () => {
+              this.UNLIKE(food.id)
+          }
+        })
+      } else if(type == "unlike") {
         this.UNLIKE(food.id)
-        .then(() => {
-          this.fetchFoods()
-          .then(() => {
-            this.foodList = this.getLikeFoodList
-          })
+        this.$snackbar.open({
+          message: `${food.place_name} 음식점 좋아요 취소`,
+          duration: 3000,          
+          type: 'is-warning',
+          position: 'is-bottom-right',
+          actionText: '취소하기',
+          onAction: () => {
+              this.LIKE(food.id)
+          }
         })
       } else if (type == "hate") {
         this.HATE(food.id)
+        this.$snackbar.open({
+          message: `${food.place_name} 음식점 싫어요`,
+          duration: 3000,          
+          type: 'is-success',
+          position: 'is-bottom-right',
+          actionText: '취소하기',
+          onAction: () => {
+              this.UNHATE(food.id)
+          }
+        })
       } else if (type == "unhate") {
         this.UNHATE(food.id)
-      }
-    },
-    sort(type, index) {
-      if(type == "asc") {
-        return this.foodList.sort((a, b) => {
-          return a.place_name - b.place_name ? -1 : a.place_name > b.place_name ? 1 : 0
+        this.$snackbar.open({
+          message: `${food.place_name} 음식점 싫어요 취소`,
+          duration: 3000,
+          type: 'is-warning',
+          position: 'is-bottom-right',
+          actionText: '취소하기',
+          onAction: () => {
+              this.HATE(food.id)
+          }
         })
-      } else if (type == "desc") {
-        return this.foodList.sort((a, b) => {
-          return a.place_name - b.place_name ? -1 : a.place_name < b.place_name ? 1 : 0
-        })
       }
-    },
+    }
   }
 }
 </script>

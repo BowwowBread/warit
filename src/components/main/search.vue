@@ -21,23 +21,23 @@
         @sort="onSort"        
         >
             <template scope="props">
-                <b-table-column field="place_name" label="음식점명" sortable>
+                <b-table-column field="place_name" label="음식점명" sortable width="200">
                     {{ props.row.place_name }}
                 </b-table-column>
-                <b-table-column  label="카테고리">
+                <b-table-column  label="카테고리" width="400">
                     {{ props.row.category_name }}
                 </b-table-column>
-                <b-table-column label="주소">
+                <b-table-column label="주소" width="300">
                     {{ props.row.address }}
                 </b-table-column>
-                <b-table-column field="likeCount" label="좋아요 수" sortable centered>
+                <b-table-column field="likeCount" label="좋아요 수" sortable centered width="150">
                     {{ props.row.likeCount }}
                 </b-table-column>
-                <b-table-column field="like" label="좋아요">
+                <b-table-column field="like" label="좋아요" width="100">
                     <button class="button is-warning" v-if="!props.row.like" @click="toggle('like', props.row)">O</button>
                     <button class="button is-success"v-else @click="toggle('unlike', props.row)">X</button>
                 </b-table-column>
-                <b-table-column field="hate" label="싫어요">
+                <b-table-column field="hate" label="싫어요" width="100">
                     <button class="button is-warning"v-if="!props.row.hate" @click="toggle('hate', props.row)">O</button>        
                     <button class="button is-success" v-else @click="toggle('unhate', props.row)">X</button>  
                 </b-table-column>
@@ -67,10 +67,6 @@ export default {
   name: 'search',
   data() {
     return {
-      page: 1,
-      order: 'is-centered',
-      size: 'is-medium',
-      isSimple: false,
       search: '',
       foodList: [],
       isEmpty: false,
@@ -81,8 +77,12 @@ export default {
       defaultSortDirection: 'asc',
       perPage: 10,
       sortField: 'likeCount',
-      sortOrder: 'desc',
-      defaultSortOrder: 'desc',
+      sortOrder: 'asc',
+      defaultSortOrder: 'asc',
+      page: 1,
+      order: 'is-centered',
+      size: 'is-medium',
+      isSimple: false,
     }
   },
   created() {
@@ -132,11 +132,10 @@ export default {
       this.isLoading = true
       this.fetchFoods()
       .then(() => {
-      this.foodList = []        
       this.foodList = this.getFoodLists
       this.isLoading = false
       if(this.sortField == "place_name") {
-        this.foodList = this.getFoodLists.sort((a, b) => {
+        this.foodList = this.foodList.sort((a, b) => {
           if(this.sortOrder == "asc") {
             return a.place_name > b.place_name ? 1 : a.place_name < b.place_name ? -1 : 0
           } else if(this.sortOrder == "desc") {
@@ -144,7 +143,7 @@ export default {
           }
         })
       } else if(this.sortField == "likeCount") {
-        this.foodList = this.getFoodLists.sort((a, b) => {
+        this.foodList = this.foodList.sort((a, b) => {
           return a.place_name > b.place_name ? 1 : a.place_name < b.place_name ? -1 : 0
         }).sort((a, b) => {
           if(this.sortOrder == "asc") {
@@ -171,12 +170,52 @@ export default {
     toggle(type, food) {
       if (type == "like") {
         this.LIKE(food.id)
+        this.$snackbar.open({
+          message: `${food.place_name} 음식점 좋아요`,
+          duration: 3000,          
+          type: 'is-success',
+          position: 'is-bottom-right',
+          actionText: '취소하기',
+          onAction: () => {
+              this.UNLIKE(food.id)
+          }
+        })
       } else if(type == "unlike") {
         this.UNLIKE(food.id)
+        this.$snackbar.open({
+          message: `${food.place_name} 음식점 좋아요 취소`,
+          duration: 3000,          
+          type: 'is-warning',
+          position: 'is-bottom-right',
+          actionText: '취소하기',
+          onAction: () => {
+              this.LIKE(food.id)
+          }
+        })
       } else if (type == "hate") {
         this.HATE(food.id)
+        this.$snackbar.open({
+          message: `${food.place_name} 음식점 싫어요`,
+          duration: 3000,          
+          type: 'is-success',
+          position: 'is-bottom-right',
+          actionText: '취소하기',
+          onAction: () => {
+              this.UNHATE(food.id)
+          }
+        })
       } else if (type == "unhate") {
         this.UNHATE(food.id)
+        this.$snackbar.open({
+          message: `${food.place_name} 음식점 싫어요 취소`,
+          duration: 3000,
+          type: 'is-warning',
+          position: 'is-bottom-right',
+          actionText: '취소하기',
+          onAction: () => {
+              this.HATE(food.id)
+          }
+        })
       }
     },
   }

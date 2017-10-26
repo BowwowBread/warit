@@ -104,8 +104,10 @@ router.get('/auth_success', (req, res) => {
     //로그인 성공
     const secret = req.app.get('jwt-secret')
     const token = tokenAuth.signToken(email, secret)
+    console.log(signType)
     res.cookie("email", email)
       .cookie("token", token)
+      .cookie('sign', signType)      
       .redirect('http://localhost:3000')
   } else if (signType == "signup") {
     //회원가입 성공
@@ -120,6 +122,7 @@ router.get('/auth_success', (req, res) => {
       const token = tokenAuth.signToken(email, secret)
       res.cookie("email", email)
         .cookie("token", token)
+        .cookie('sign', signType)
         .redirect('http://localhost:3000')
     }
 
@@ -138,7 +141,9 @@ router.get('/auth_success', (req, res) => {
 
 
 router.get('/auth_fail', (req, res) => {
-  res.redirect('http://localhost:3000/sign')
+  const signType = req.flash('sign-type')[0]
+  res.cookie('sign', signType)
+      redirect('http://localhost:3000/sign')
 })
 
 /**

@@ -1,0 +1,20 @@
+.menu-burger {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 10;
+  color: white;
+}
+.column {
+  display: inline;
+  text-align:center;
+  font-size: .8rem;
+}
+.logo {
+  font-size: 1.5rem;
+}
+.columns {
+  height: 2rem;
+  display: flex;
+  justify-content: center;
+}

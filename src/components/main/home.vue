@@ -4,14 +4,16 @@
     <div class="form">
       <div class="level">
         <div class="level-left">
-    <button class="button is-primary" @click="updateLocation">현재위치</button>    
+    <button class="button is-primary is-outlined" @click="updateLocation">내 위치</button>    
+    <button class="button is-primary is-outlined" @click="categorySearch">내 위치 검색하기</button>        
     </div>
     <div class="level-right">
-      <b-field @keydown.native.enter="keywordSearch(keyword)">
-        <b-input v-if="!loading"v-model="keyword" placeholder="지역 검색" type="search" icon="search"></b-input>
-        <b-input v-else v-model="keyword" placeholder="검색중..." loading type="search" icon="search"></b-input>        
-        <p class="control">
-          <button class="button is-primary" @click="keywordSearch(keyword)" >검색</button>
+      <b-field class="is-primary" @keydown.native.enter="keywordSearch(keyword)">
+        <b-input  v-if="!loading"v-model="keyword" placeholder="지역 검색" type="search" icon="search" style="margin-top: 0 !important"></b-input>
+        <b-input v-else v-model="keyword" placeholder="검색중..." loading type="search" icon="search" style="margin-top: 0 !important"></b-input>        
+        <p class="control" style="margin-top: 0 !important">
+          <button v-if="!loading" class="button is-primary is-outlined" @click="keywordSearch(keyword)" >검색</button>
+          <button v-else class="button is-primary is-outlined is-loading" @click="keywordSearch(keyword)" >검색중</button>
         </p>
       </b-field>
     </div>
@@ -46,6 +48,24 @@
       }
     },
     created() {
+      const sign = this.$cookie.get('sign')
+      console.log(sign)
+      if(sign == "login") {
+        this.$toast.open({
+            duration: 3000,
+            message: `로그인 성공!`,
+            position: 'is-top',
+            type: 'is-success'
+        })
+      } else if(sign == "signUp") {
+        this.$toast.open({
+            duration: 3000,
+            message: `회원가입 성공!`,
+            position: 'is-top',
+            type: 'is-success'
+        })
+      }
+      this.$cookie.delete('sign')      
       this.isLoading = true
       this.UPDATE_LOCATION()
       .then((CurLatLng) => {
@@ -113,6 +133,15 @@
           infowindow.open(this.map, marker)
       },
       keywordSearch(keyword) {
+        if(keyword == "") {
+          this.$toast.open({
+            duration: 3000,
+            message: `검색어를 입력해주세요`,
+            position: 'is-bottom',
+            type: 'is-danger'
+          })
+          return
+        }
         let foodList = []      
         this.loading = true        
         const callback = (result, status, pagination) => {
@@ -137,6 +166,12 @@
                 }
                 this.SET_LOCATION(LatLng)
                 this.loading = false
+                this.$toast.open({
+                  duration: 3000,
+                  message: `${keyword} 주변 음식점을 검색합니다`,
+                  position: 'is-bottom',
+                  type: 'is-success'
+                })
               })
               .catch((err) => {
                 console.log(err)
@@ -144,15 +179,30 @@
               })
             }
           } else if (status === daum.maps.services.Status.ZERO_RESULT) {
-            console.log('검색 결과가 존재하지 않습니다.')
+            this.$toast.open({
+              duration: 3000,
+              message: `검색결과가 존재하지 않습니다!`,
+              position: 'is-bottom',
+              type: 'is-danger'
+            })
             this.loading = false
             return
           } else if (status === daum.maps.services.Status.ERROR) {
-            console.log('검색 결과 중 오류가 발생했습니다.')
+            this.$toast.open({
+              duration: 3000,
+              message: `검색결과 중 오류가 발생했습니다!`,
+              position: 'is-bottom',
+              type: 'is-danger'
+            })
             this.loading = false            
             return
           } else {
-            console.log('검색 결과 중 오류가 발생했습니다.')            
+            this.$toast.open({
+              duration: 3000,
+              message: `검색결과 중 오류가 발생했습니다!`,
+              position: 'is-bottom',
+              type: 'is-danger'
+            })            
             this.loading = false
             return
           }
@@ -181,19 +231,45 @@
                     bounds.extend(new daum.maps.LatLng(foodData.y, foodData.x))
                 })
                 this.map.setBounds(bounds)
+                this.loading = false
+                this.$toast.open({
+                  duration: 3000,
+                  message: `내 주변 음식점을 검색합니다`,
+                  position: 'is-bottom',
+                  type: 'is-success'
+                })
               })
               .catch((err) => {
                 this.loading = false
                 console.log(err)
               })
             }
-          } else if (status === daum.maps.services.Status.ZERO_RESULT) {
-            console.log('검색 결과가 존재하지 않습니다.')
+           } else if (status === daum.maps.services.Status.ZERO_RESULT) {
+            this.$toast.open({
+              duration: 3000,
+              message: `검색결과가 존재하지 않습니다!`,
+              position: 'is-bottom',
+              type: 'is-danger'
+            })
             this.loading = false
             return
           } else if (status === daum.maps.services.Status.ERROR) {
-            console.log('검색 결과 중 오류가 발생했습니다.')
+            this.$toast.open({
+              duration: 3000,
+              message: `검색결과 중 오류가 발생했습니다!`,
+              position: 'is-bottom',
+              type: 'is-danger'
+            })
             this.loading = false            
+            return
+          } else {
+            this.$toast.open({
+              duration: 3000,
+              message: `검색결과 중 오류가 발생했습니다!`,
+              position: 'is-bottom',
+              type: 'is-danger'
+            })            
+            this.loading = false
             return
           }
         }
@@ -235,4 +311,6 @@
 </script>
 
 <style src="../../assets/css/home.scss" scoped>
+
+</style>
 

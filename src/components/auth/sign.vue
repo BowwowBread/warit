@@ -1,9 +1,9 @@
 <template>
   <div id="sign">
-    <div class="3rd_auth">
-      <button @click="auth_sign('kakao')">kakao</button>
-      <button @click="auth_sign('facebook')">facebook</button>
-      <button @click="auth_sign('google')">google</button>
+    <div class="button-group">
+      <button class="button is-warning" @click="auth_sign('kakao')">카카오로 이용하기</button>
+      <button class="button is-info" @click="auth_sign('facebook')">페이스북으로 이용하기</button>
+      <button class="button " @click="auth_sign('google')">구글로 이용하기</button>
     </div>
   </div>
 </template>
@@ -15,6 +15,17 @@ export default {
     return {
     }
   },
+  created() {
+    const sign = this.$cookie.get('sign')
+    if(sign == "error") {
+      this.$toast.open({
+          duration: 3000,
+          message: `로그인에 실패하였습니다. 이미 등록된 계정입니다`,
+          position: 'is-top',
+          type: 'is-danger'
+      })
+    }
+  },
   methods: {
     auth_sign(auth) {
       const baseURI = 'http://localhost:3001/api'
@@ -23,3 +34,4 @@ export default {
   }
 }
 </script>
+<style src="../../assets/css/sign.scss" scoped>
