@@ -20,7 +20,7 @@ import config from './config/config'
 
 //connect to mongodb
 mongoose.Promise = global.Promise
-mongoose.connection.openUri('mongodb://Admin:1004@localhost:27017/warit')
+mongoose.connection.openUri('mongodb://waritAdmin:1004@localhost:27017/warit')
 
 //on connection
 mongoose.connection.on('connected', () => {
@@ -48,7 +48,11 @@ passport.deserializeUser(function (user, done) {
 })
 
 //port no
-const port = 3001
+const port = 3000
+const api_port = 3001
+
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
 app.use(express.static('public'));
 app.use(flash())
 app.use(session({
