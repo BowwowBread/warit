@@ -1,23 +1,43 @@
 <template>
   <div id="home">
     <b-loading :active.sync="isLoading" :canCancel="true"></b-loading>
-    <div class="form">
+    <div class="form is-hidden-mobile">
       <div class="level">
         <div class="level-left">
-    <button class="button is-primary is-outlined" @click="updateLocation">내 위치</button>    
-    <button class="button is-primary is-outlined" @click="categorySearch">내 위치 검색하기</button>        
+          <button class="button is-primary is-outlined" @click="moveCurLatLng">내 위치로 이동</button>    
+          <button class="button is-primary is-outlined" @click="categorySearch">내 위치 검색하기</button>        
+          </div>
+        <div class="level-right">
+          <b-field class="is-primary" @keydown.native.enter="keywordSearch(keyword)">
+            <b-input  v-if="!loading"v-model="keyword" placeholder="지역 검색" type="search" icon="search" style="margin-top: 0 !important"></b-input>
+            <b-input v-else v-model="keyword" placeholder="검색중..." loading type="search" icon="search" style="margin-top: 0 !important"></b-input>        
+            <p class="control" style="margin-top: 0 !important">
+              <button v-if="!loading" class="button is-primary is-outlined" @click="keywordSearch(keyword)" >검색</button>
+              <button v-else class="button is-primary is-outlined is-loading" @click="keywordSearch(keyword)" >검색중</button>
+            </p>
+          </b-field>
+       </div>
+      </div>
     </div>
-    <div class="level-right">
-      <b-field class="is-primary" @keydown.native.enter="keywordSearch(keyword)">
-        <b-input  v-if="!loading"v-model="keyword" placeholder="지역 검색" type="search" icon="search" style="margin-top: 0 !important"></b-input>
-        <b-input v-else v-model="keyword" placeholder="검색중..." loading type="search" icon="search" style="margin-top: 0 !important"></b-input>        
-        <p class="control" style="margin-top: 0 !important">
-          <button v-if="!loading" class="button is-primary is-outlined" @click="keywordSearch(keyword)" >검색</button>
-          <button v-else class="button is-primary is-outlined is-loading" @click="keywordSearch(keyword)" >검색중</button>
-        </p>
-      </b-field>
-    </div>
-    </div>
+    <div class="form is-inline-mobile is-hidden-tablet">
+      <div class="columns is-multiline is-mobile">
+        <div class="column is-half">
+          <button style="width:100%" class="button is-primary is-outlined" @click="moveCurLatLng">내 위치로 이동</button>    
+        </div>
+        <div class="column is-half">
+          <button style="width:100%" class="button is-primary is-outlined" @click="categorySearch">내 위치 검색하기</button>        
+        </div>
+        <div class="column">
+          <b-field class="is-primary" @keydown.native.enter="keywordSearch(keyword)">
+            <b-input v-if="!loading"v-model="keyword" placeholder="지역 검색" type="search" icon="search" style="margin-top: 0 !important; width:100%"></b-input>
+            <b-input v-else v-model="keyword" placeholder="검색중..." loading type="search" icon="search" style="margin-top: 0 !important; width:100%"></b-input>        
+            <p class="control" style="margin-top: 0 !important">
+              <button v-if="!loading" class="button is-primary is-outlined" @click="keywordSearch(keyword)" >검색</button>
+              <button v-else class="button is-primary is-outlined is-loading" @click="keywordSearch(keyword)" >검색중</button>
+            </p>
+          </b-field>
+        </div>
+      </div>
     </div>
     <div id="map"></div>
   </div>
@@ -49,7 +69,6 @@
     },
     created() {
       const sign = this.$cookie.get('sign')
-      console.log(sign)
       if(sign == "login") {
         this.$toast.open({
             duration: 3000,
@@ -109,28 +128,35 @@
           const center = new daum.maps.LatLng(this.CurLatLng.lat, this.CurLatLng.lng)
           this.map.setLevel(2)          
           this.map.panTo(center)                    
-          console.log(this.map.getLevel())
         })
+      },
+      moveCurLatLng() {
+        const center = new daum.maps.LatLng(this.CurLatLng.lat, this.CurLatLng.lng)
+        this.map.setLevel(2)          
+        this.map.panTo(center)      
       },
       updateMap() {
           const container = document.getElementById('map')
           const options = {
-            center: new daum.maps.LatLng(this.CurLatLng.lat, this.CurLatLng.lng), // 중심 좌표
-            level: 3 // 확대 수준
+            center: new daum.maps.LatLng(this.CurLatLng.lat, this.CurLatLng.lng), 
+            level: 3 
           }
           this.map = new daum.maps.Map(container, options)
-          this.map.setCopyrightPosition(daum.maps.CopyrightPosition.BOTTOMRIGHT, true) // copyright 위치 오른쪽으로
+          this.map.setCopyrightPosition(daum.maps.CopyrightPosition.BOTTOMRIGHT, true) 
 
-          const infowindow = new daum.maps.InfoWindow({
-            zIndex: 1,
-            content: '<div class="marker current">현재 위치</div>'
-          })
           var marker = new daum.maps.Marker({
               map: this.map,
               position: options.center
           })
-
-          infowindow.open(this.map, marker)
+          var customOverlay = new daum.maps.CustomOverlay({
+              map: this.map,
+              clickable: true,
+              content: '<span class="tag is-info is-small is-rounded">'+'현재위치'+'</span>',
+              position: options.center,
+              yAnchor: 3,
+              zIndex: 5
+          });
+          customOverlay.setMap(this.map)
       },
       keywordSearch(keyword) {
         if(keyword == "") {
@@ -276,28 +302,31 @@
         this.CATEGORY_SEARCH(callback)
       },
       displayMarker(place) {
-        const infowindow = new daum.maps.InfoWindow({
-          zIndex: 1,
-          content: '<div class="marker">' + place.place_name + ": " + place.category_name+ '</div>'
-        })
+        var customOverlay = new daum.maps.CustomOverlay({
+          map: this.map,
+          content: '<span class="tag is-danger is-small is-rounded">' + place.place_name + ": " + place.category_name+ '</span>',
+          position: new daum.maps.LatLng(place.y, place.x),
+          yAnchor: 3,
+          zIndex: 5
+        });
         const marker = new daum.maps.Marker({
           map: this.map,
           position: new daum.maps.LatLng(place.y, place.x)
         })
-
+        customOverlay.setMap(null)
         this.markers.push(marker)
   
         daum.maps.event.addListener(marker, 'click', () => {
-          infowindow.open(this.map, marker)
+          customOverlay.setMap(this.map)
         })
         daum.maps.event.addListener(marker, 'mouseover', () => {
-          infowindow.open(this.map, marker)
+          customOverlay.setMap(this.map)
         })
         daum.maps.event.addListener(marker, 'mouseout', () => {
-          infowindow.close(this.map, marker)
+          customOverlay.setMap(null)
         })
         daum.maps.event.addListener(marker, 'dragstart', () => {
-          infowindow.close(this.map, marker)
+          customOverlay.setMap(null)
         })
       },
       clearMarker() {
