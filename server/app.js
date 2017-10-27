@@ -20,7 +20,7 @@ import config from './config/config'
 
 //connect to mongodb
 mongoose.Promise = global.Promise
-mongoose.connection.openUri('mongodb://Admin:1004@13.125.41.251:27017/warit')
+mongoose.connection.openUri('mongodb://Admin:1004@localhost:27017/warit')
 
 //on connection
 mongoose.connection.on('connected', () => {
