@@ -49,7 +49,7 @@ passport.deserializeUser(function (user, done) {
 
 //port no
 const port = 3001
-
+app.use(express.static('public'));
 app.use(flash())
 app.use(session({
   secret: 'keyboard cat',
