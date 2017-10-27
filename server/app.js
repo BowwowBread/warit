@@ -7,8 +7,12 @@ import passport from 'passport'
 import session from 'express-session'
 import cookie from 'cookie-parser' 
 import flash from 'connect-flash'
+import http from 'http';
+import https from 'https';
+import httpsRedrect from 'express-https-redirect';
 
 var app = express()
+var client = express()
 
 import api from './routes/index'
 import config from './config/config'
@@ -48,12 +52,13 @@ passport.deserializeUser(function (user, done) {
 })
 
 //port no
-const port = 3000
+const port = 3001
 const api_port = 3001
 
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
-app.use(express.static('public'));
+client.use('/',httpsRedrect(true));
+client.set('views', path.join(__dirname, 'views'));
+client.set('view engine', 'jade');
+client.use(express.static('public'));
 app.use(flash())
 app.use(session({
   secret: 'keyboard cat',
@@ -94,10 +99,19 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use('/api', api)
 
 //test server
-app.get('/', (req, res) => {
+client.get('/', (req, res) => {
   res.send('index')
 })
 
-app.listen(port, () => {
-  console.log('Service started at port : ' + port)
-})
+http.createServer(client).listen(3000);
+http.createServer(app).listen(3001);
+
+function client (req, res) {
+  res.write('Response from 3000\n');
+  res.end();
+}
+
+function app (req, res) {
+  res.write('Response from 3001\n');
+  res.end();
+}
