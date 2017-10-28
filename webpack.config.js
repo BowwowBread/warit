@@ -10,7 +10,8 @@ module.exports = {
     filename: 'bundle.js'
   },
   resolve: {
-    extensions: ['', '.js', '.vue']
+    extensions: ['', '.js', '.vue'],
+    root: __dirname
   },
   module: {
     rules: [{
