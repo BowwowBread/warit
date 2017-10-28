@@ -24,7 +24,7 @@ import config from './config/config'
 
 //connect to mongodb
 mongoose.Promise = global.Promise
-mongoose.connection.openUri('mongodb://waritAdmin:1004@localhost:27017/warit')
+mongoose.connection.openUri('mongodb://Admin:1004@localhost:27017/warit')
 
 //on connection
 mongoose.connection.on('connected', () => {
@@ -51,14 +51,9 @@ passport.deserializeUser(function (user, done) {
   done(null, user)
 })
 
-//port no
-const port = 3001
-const api_port = 3001
 
-client.use('/',httpsRedrect(true));
-client.set('views', path.join(__dirname, 'views'));
-client.set('view engine', 'jade');
-client.use(express.static('public'));
+
+
 app.use(flash())
 app.use(session({
   secret: 'keyboard cat',
@@ -92,8 +87,7 @@ app.use((req, res, next) => {
 //body -parser
 app.use(bodyparser.json())
 
-//static files
-app.use(express.static(path.join(__dirname, 'public')))
+
 
 //routes
 app.use('/api', api)
@@ -103,15 +97,21 @@ client.get('/', (req, res) => {
   res.send('index')
 })
 
-http.createServer(client).listen(3000);
-http.createServer(app).listen(3001);
-
-function client (req, res) {
-  res.write('Response from 3000\n');
-  res.end();
-}
-
-function app (req, res) {
-  res.write('Response from 3001\n');
-  res.end();
+//port no
+const client_port = 3000
+const api_port = 3001
+console.log(process.env.NODE_ENV + "env started :")
+if(process.env.NODE_ENV == "development") {
+  app.listen(3001, () => {
+    console.log("api server start on port 3001")
+  })
+} else if(process.env.NODE_ENV == "production") {
+  client.use('/',httpsRedrect(true));
+  client.use(express.static(path.join(__dirname, 'public')))
+  http.createServer(client).listen(client_port, () => {
+    console.log('client server start on port 3000');
+  });
+  http.createServer(app).listen(api_port, () => {
+    console.log('api server start on port 3001');
+  });
 }

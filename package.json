@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "server": "nodemon index.js",
+    "server": "env NODE_ENV=development nodemon index.js",
     "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
-    "start": "concurrently \"npm run dev\" \"npm run server\""
+    "start": "concurrently \"npm run dev\" \"npm run server\"",
+    "serve": "env NODE_ENV=production pm2 index.js"
   },
   "author": "",
   "license": "ISC",

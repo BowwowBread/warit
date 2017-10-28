@@ -28,7 +28,8 @@ export default {
   },
   methods: {
     auth_sign(auth) {
-      const baseURI = 'http://13.125.41.251:3001/api'
+      const baseURI = location.protocol + '//' + location.hostname + ':' + 3001 + '/api'
+      console.log(baseURI)
       location.href=`${baseURI}/auth/${auth}`
     }
   }
