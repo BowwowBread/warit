@@ -15,7 +15,7 @@ var app = express()
 var client = express()
 
 import api from './routes/index'
-import config from './config/config'
+import config from './config/auth/config'
 
 
 /**

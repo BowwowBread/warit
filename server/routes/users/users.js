@@ -2,9 +2,9 @@ import express from 'express'
 import passport from 'passport'
 import controller from './users.controller'
 import tokenAuth from '../../config/auth/auth'
+import config from '../../config/baseURI'
 
 const router = express.Router()
-
 
 
 /**
@@ -103,11 +103,10 @@ router.get('/auth_success', (req, res) => {
     //로그인 성공
     const secret = req.app.get('jwt-secret')
     const token = tokenAuth.signToken(email, secret)
-    console.log(signType)
     res.cookie("email", email)
       .cookie("token", token)
       .cookie('sign', signType)      
-      .redirect(location.protocol + '//' + location.hostname + ':' + 3000)
+      .redirect('http://'+config.baseURI)
   } else if (signType == "signup") {
     //회원가입 성공
     const userInfo = {
@@ -122,7 +121,7 @@ router.get('/auth_success', (req, res) => {
       res.cookie("email", email)
         .cookie("token", token)
         .cookie('sign', signType)
-        .redirect(location.protocol + '//' + location.hostname + ':' + 3000)
+        .redirect('http://'+config.baseURI)
     }
 
     const error = err => {
@@ -142,7 +141,7 @@ router.get('/auth_success', (req, res) => {
 router.get('/auth_fail', (req, res) => {
   const signType = req.flash('sign-type')[0]
   res.cookie('sign', signType)
-      redirect(location.protocol + '//' + location.hostname + ':' + 3000 + '/sign')
+      redirect('http://'+config.baseURI + '/sign')
 })
 
 /**
