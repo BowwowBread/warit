@@ -107,7 +107,7 @@ router.get('/auth_success', (req, res) => {
     res.cookie("email", email)
       .cookie("token", token)
       .cookie('sign', signType)      
-      .redirect('http://localhost:3000')
+      .redirect(location.protocol + '//' + location.hostname + ':' + 3000)
   } else if (signType == "signup") {
     //회원가입 성공
     const userInfo = {
