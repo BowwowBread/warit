@@ -92,21 +92,16 @@ app.use(bodyparser.json())
 //routes
 app.use('/api', api)
 
-//test server
-client.get('/', (req, res) => {
-  res.send('index')
-})
-
 //port no
 const client_port = 3000
 const api_port = 3001
-console.log(process.env.NODE_ENV + "env started :")
 if(process.env.NODE_ENV == "development") {
+  console.log('development env started :')
   app.listen(3001, () => {
     console.log("api server start on port 3001")
   })
-} else if(process.env.NODE_ENV == "production") {
-  client.use('/',httpsRedrect(true));
+} else {
+  console.log('production env started :')  
   client.use(express.static(path.join(__dirname, 'public')))
   http.createServer(client).listen(client_port, () => {
     console.log('client server start on port 3000');

@@ -1,6 +1,6 @@
 <template>
   <div id="home">
-    <b-loading :active.sync="isLoading" :canCancel="true"></b-loading>
+    <b-loading :active.sync="isLoading" :canCancel="false"></b-loading>
     <div class="form is-hidden-mobile">
       <div class="level">
         <div class="level-left">
