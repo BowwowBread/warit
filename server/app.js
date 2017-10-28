@@ -102,7 +102,8 @@ if(process.env.NODE_ENV == "development") {
   })
 } else {
   console.log('production env started :')  
-  client.use(express.static(path.join(__dirname, 'public')))
+  client.use(express.static(path.join(__dirname, '../public')))
+  client.get('*', (req, res) => { res.sendFile(path.join(__dirname, '../public/index.html')); });
   http.createServer(client).listen(client_port, () => {
     console.log('client server start on port 3000');
   });

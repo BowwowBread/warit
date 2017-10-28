@@ -8,8 +8,6 @@ import food from './food/food'
 
 import request from 'request'
 
-import loginAuth from '../config/auth'
-
 /**
  * api routes
  */

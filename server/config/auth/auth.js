@@ -8,7 +8,20 @@ function signToken(email, secret) {
     expiresIn: '7d'
   })
 }
-
+function checkAdmin() {
+  return compose()
+    .use(function (req, res, next) {
+      const adminToken = req.headers.authorization
+      if(adminToken == "waritAdminToken") {
+        next()
+      } else {
+        res.status(403).json({
+          result: 'error',
+          message: 'not admin'
+        })
+      }
+    })
+}
 function isAuthenticated() {
   return compose()
     .use(function (req, res, next) {
@@ -43,3 +56,4 @@ function isAuthenticated() {
 
 exports.signToken = signToken
 exports.isAuthenticated = isAuthenticated
+exports.checkAdmin = checkAdmin

@@ -1,17 +1,16 @@
 import express from 'express'
 import passport from 'passport'
 import controller from './users.controller'
+import tokenAuth from '../../config/auth/auth'
 
 const router = express.Router()
 
-import loginAuth from '../../config/auth'
-import tokenAuth from '../../config/auth/auth.js'
 
 
 /**
  * show users
  */
-router.get('/', (req, res) => {
+router.get('/', tokenAuth.checkAdmin(), (req, res) => {
 
   const response = users => {
     res.json({
@@ -36,7 +35,7 @@ router.get('/', (req, res) => {
 /**
  * search user by email
  */
-router.get('/search/:email', (req, res) => {
+router.get('/search/:email', tokenAuth.isAuthenticated(), (req, res) => {
 
   const email = req.params.email
 
@@ -149,7 +148,7 @@ router.get('/auth_fail', (req, res) => {
 /**
  * remove all users
  */
-router.delete('/', (req, res) => {
+router.delete('/', tokenAuth.checkAdmin(), (req, res) => {
 
   const response = (result) => {
     res.json({
@@ -172,7 +171,7 @@ router.delete('/', (req, res) => {
 /**
  * remove user by email
  */
-router.delete('/:email', (req, res) => {
+router.delete('/:email', tokenAuth.checkAdmin(), (req, res) => {
   const email = req.params.email
   console.log(email)
   const response = user => {
@@ -194,7 +193,7 @@ router.delete('/:email', (req, res) => {
     .catch(error)
 })
 
-router.get('/like/:email/:id', (req, res) => {
+router.get('/like/:email/:id', tokenAuth.isAuthenticated(), (req, res) => {
   const email = req.params.email
   const id = req.params.id
   const response = user => {
@@ -216,7 +215,7 @@ router.get('/like/:email/:id', (req, res) => {
     .catch(error)
   })
   
-  router.delete('/like/:email/:id', (req, res) => {
+  router.delete('/like/:email/:id', tokenAuth.isAuthenticated(), (req, res) => {
   const email = req.params.email
   const id = req.params.id
   const response = user => {
@@ -238,7 +237,7 @@ router.get('/like/:email/:id', (req, res) => {
     .catch(error)
   })
 
-  router.get('/hate/:email/:id', (req, res) => {
+  router.get('/hate/:email/:id', tokenAuth.isAuthenticated(), (req, res) => {
   const email = req.params.email
   const id = req.params.id
   const response = user => {
@@ -260,7 +259,7 @@ router.get('/like/:email/:id', (req, res) => {
     .catch(error)
   })
 
-    router.delete('/hate/:email/:id', (req, res) => {
+    router.delete('/hate/:email/:id', tokenAuth.isAuthenticated(), (req, res) => {
   const email = req.params.email
   const id = req.params.id
   const response = user => {

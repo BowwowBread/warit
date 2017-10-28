@@ -2,7 +2,6 @@ import express from 'express'
 import passport_config from '../../config/auth/passport'
 import passport from 'passport'
 import controller from './auth.controller'
-import loginAuth from '../../config/auth'
 import tokenAuth from '../../config/auth/auth.js'
 import request from 'request'
 
@@ -54,7 +53,7 @@ router.get('/google/callback',
 )
 
 //logout
-router.get('/logout', function (req, res) {
+router.get('/logout', tokenAuth.isAuthenticated(), (req, res) => {
   req.logout()
   res.clearCookie('email').json({
     "result": "logout",
