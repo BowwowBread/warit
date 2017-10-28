@@ -4,14 +4,15 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 module.exports = {
-  entry: './src/main.js',
+  entry: __dirname + '/src/main.js',
   output: {
     path: path.resolve(__dirname, './public'),
     filename: 'bundle.js'
   },
   resolve: {
     extensions: ['', '.js', '.vue'],
-    root: __dirname
+    root: __dirname,
+    modules: [__dirname, 'node_modules']
   },
   module: {
     rules: [{
