@@ -122,7 +122,7 @@ router.get('/auth_success', (req, res) => {
       res.cookie("email", email)
         .cookie("token", token)
         .cookie('sign', signType)
-        .redirect('http://localhost:3000')
+        .redirect(location.protocol + '//' + location.hostname + ':' + 3000)
     }
 
     const error = err => {
@@ -142,7 +142,7 @@ router.get('/auth_success', (req, res) => {
 router.get('/auth_fail', (req, res) => {
   const signType = req.flash('sign-type')[0]
   res.cookie('sign', signType)
-      redirect('http://localhost:3000/sign')
+      redirect(location.protocol + '//' + location.hostname + ':' + 3000 + '/sign')
 })
 
 /**
