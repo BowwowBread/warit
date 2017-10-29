@@ -72,6 +72,7 @@ router.post('/signup', (req, res) => {
   }
 
   const response = user => {
+    console.log(`${user.info.email} signup success by ${user.info.auth_provider}`)
     res.json({
       result: 'register user success.',
       user: user
@@ -79,6 +80,7 @@ router.post('/signup', (req, res) => {
   }
 
   const error = err => {
+    console.log(`${user.info.email} signup fail by ${user.info.auth_provider}`)
     res.status(409).json({
       result: 'register user failed.',
       message: error.message
@@ -103,10 +105,11 @@ router.get('/auth_success', (req, res) => {
     //로그인 성공
     const secret = req.app.get('jwt-secret')
     const token = tokenAuth.signToken(email, secret)
+    console.log(`${user.info.email} login success by ${user.info.auth_provider}`)
     res.cookie("email", email)
       .cookie("token", token)
-      .cookie('sign', signType)      
-      .redirect('http://'+config.baseURI)
+      .cookie('sign', signType)
+      .redirect('http://' + config.baseURI)
   } else if (signType == "signup") {
     //회원가입 성공
     const userInfo = {
@@ -118,10 +121,11 @@ router.get('/auth_success', (req, res) => {
     const response = user => {
       const secret = req.app.get('jwt-secret')
       const token = tokenAuth.signToken(email, secret)
+      console.log(`${user.info.email} signup success by ${user.info.auth_provider}`)    
       res.cookie("email", email)
         .cookie("token", token)
         .cookie('sign', signType)
-        .redirect('http://'+config.baseURI)
+        .redirect('http://' + config.baseURI)
     }
 
     const error = err => {
@@ -140,8 +144,9 @@ router.get('/auth_success', (req, res) => {
 
 router.get('/auth_fail', (req, res) => {
   const signType = req.flash('sign-type')[0]
+  console.log(`${user.info.email} ${signType} fail by ${user.info.auth_provider}`)  
   res.cookie('sign', signType)
-      .redirect('http://'+config.baseURI + '/sign')
+    .redirect('http://' + config.baseURI + '/sign')
 })
 
 /**
@@ -173,6 +178,7 @@ router.delete('/', tokenAuth.checkAdmin(), (req, res) => {
 router.delete('/:email', tokenAuth.isAuthenticated(), (req, res) => {
   const email = req.params.email
   const response = user => {
+    console.log(`${user.info.email} delete success by ${user.info.auth_provider}`)    
     res.json({
       result: 'success remove user by email ' + email,
       user: user
@@ -180,6 +186,7 @@ router.delete('/:email', tokenAuth.isAuthenticated(), (req, res) => {
   }
 
   const error = err => {
+    console.log(`${user.info.email} register fail by ${user.info.auth_provider}`)    
     res.status(409).json({
       result: 'failed remove user by email',
       message: err.message
@@ -211,9 +218,9 @@ router.get('/like/:email/:id', tokenAuth.isAuthenticated(), (req, res) => {
   controller.likeFood(email, id)
     .then(response)
     .catch(error)
-  })
-  
-  router.delete('/like/:email/:id', tokenAuth.isAuthenticated(), (req, res) => {
+})
+
+router.delete('/like/:email/:id', tokenAuth.isAuthenticated(), (req, res) => {
   const email = req.params.email
   const id = req.params.id
   const response = user => {
@@ -233,9 +240,9 @@ router.get('/like/:email/:id', tokenAuth.isAuthenticated(), (req, res) => {
   controller.unlikeFood(email, id)
     .then(response)
     .catch(error)
-  })
+})
 
-  router.get('/hate/:email/:id', tokenAuth.isAuthenticated(), (req, res) => {
+router.get('/hate/:email/:id', tokenAuth.isAuthenticated(), (req, res) => {
   const email = req.params.email
   const id = req.params.id
   const response = user => {
@@ -255,9 +262,9 @@ router.get('/like/:email/:id', tokenAuth.isAuthenticated(), (req, res) => {
   controller.hateFood(email, id)
     .then(response)
     .catch(error)
-  })
+})
 
-    router.delete('/hate/:email/:id', tokenAuth.isAuthenticated(), (req, res) => {
+router.delete('/hate/:email/:id', tokenAuth.isAuthenticated(), (req, res) => {
   const email = req.params.email
   const id = req.params.id
   const response = user => {
@@ -277,6 +284,6 @@ router.get('/like/:email/:id', tokenAuth.isAuthenticated(), (req, res) => {
   controller.unhateFood(email, id)
     .then(response)
     .catch(error)
-  })
+})
 
 export default router
