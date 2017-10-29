@@ -1,8 +1,8 @@
 <template>
   <div id="myinfo">
     <div class="button-group">
-    <button class="button is-warning" @click="logout">로그아웃</button>
-    <button class="button is-danger" @click="unregister_user">회원탈퇴</button>   
+      <button class="button is-warning" @click="logout">로그아웃</button>
+      <button class="button is-danger" @click="unregister_user">회원탈퇴</button>
     </div>
   </div>
 </template>
@@ -17,13 +17,13 @@
     data() {
       return {
         email: null
-      } 
+      }
     },
     created() {
-
+  
     },
     watch: {
-
+  
     },
     computed: {
       ...mapGetters([
@@ -43,16 +43,16 @@
           confirmText: '네',
           type: 'is-warning',
           hasIcon: true,
-          onConfirm: () =>  {
-          Kakao.Auth.logout()        
-          this.LOAOUT_AUTH()
-            .then((res) => {
-              this.$cookie.delete('email')
-              this.$cookie.delete('token')
-              this.$router.push({
-                path: '/sign'
+          onConfirm: () => {
+            this.LOAOUT_AUTH()
+              .then((res) => {
+                this.$cookie.delete('email')
+                this.$cookie.delete('token')
+                Kakao.Auth.logout()
+                this.$router.push({
+                  path: '/sign'
+                })
               })
-            })
           }
         })
       },
@@ -64,20 +64,24 @@
           confirmText: '네',
           type: 'is-danger',
           hasIcon: true,
-          onConfirm: () =>  {
-            Kakao.Auth.logout()        
-           this.UNREGISTER(this.getInfo.email)
-            .then((res) => {
-              this.$cookie.delete('email')
-              this.$cookie.delete('token')
-              this.$router.push({
-                path: '/sign'
+          onConfirm: () => {
+            this.getInfo
+              .then((info) => {
+                this.UNREGISTER(info.email)
+                  .then((res) => {
+                    this.$cookie.delete('email')
+                    this.$cookie.delete('token')
+                    Kakao.Auth.logout()
+                    this.$router.push({
+                      path: '/sign'
+                    })
+                  })
               })
-            })
           }
         })
       }
     }
   }
 </script>
+
 <style src="../../assets/css/myinfo.scss" scoped>

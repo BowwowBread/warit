@@ -172,7 +172,6 @@ router.delete('/', tokenAuth.checkAdmin(), (req, res) => {
  */
 router.delete('/:email', tokenAuth.isAuthenticated(), (req, res) => {
   const email = req.params.email
-  console.log(email)
   const response = user => {
     res.json({
       result: 'success remove user by email ' + email,
