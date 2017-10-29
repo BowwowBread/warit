@@ -28,8 +28,10 @@ export default {
   },
   methods: {
     auth_sign(auth) {
-      const baseURI = location.protocol + '//' + location.hostname + ':' + 3001 + '/api'
-      console.log(baseURI)
+      let baseURI = location.protocol + '//' + location.hostname + ':' + 3001 + '/api'
+      if(auth == 'google') {
+        baseURI = 'http://ec2-13-125-41-251.ap-northeast-2.compute.amazonaws.com:3001/api'
+      }
       location.href=`${baseURI}/auth/${auth}`
     }
   }

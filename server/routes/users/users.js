@@ -141,7 +141,7 @@ router.get('/auth_success', (req, res) => {
 router.get('/auth_fail', (req, res) => {
   const signType = req.flash('sign-type')[0]
   res.cookie('sign', signType)
-      redirect('http://'+config.baseURI + '/sign')
+      .redirect('http://'+config.baseURI + '/sign')
 })
 
 /**
@@ -170,7 +170,7 @@ router.delete('/', tokenAuth.checkAdmin(), (req, res) => {
 /**
  * remove user by email
  */
-router.delete('/:email', tokenAuth.checkAdmin(), (req, res) => {
+router.delete('/:email', tokenAuth.isAuthenticated(), (req, res) => {
   const email = req.params.email
   console.log(email)
   const response = user => {
