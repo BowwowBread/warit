@@ -1,9 +1,9 @@
 import express from 'express'
 import controller from './food.controller'
-import tokenAuth from '../../config/auth/auth'
+
 const router = express.Router()
 
-router.get('/', tokenAuth.isAuthenticated(), (req, res) => {
+router.get('/', (req, res) => {
   const response = foods => {
     res.json({
       result: 'success show all ' + foods.length + ' foods.',
@@ -22,7 +22,7 @@ router.get('/', tokenAuth.isAuthenticated(), (req, res) => {
     .then(response)
     .catch(error)
 })
-router.get('/like/:id', tokenAuth.isAuthenticated(),(req, res) => {
+router.get('/like/:id', (req, res) => {
   const id = req.params.id
   const response = food => {
     res.json({
@@ -43,7 +43,7 @@ router.get('/like/:id', tokenAuth.isAuthenticated(),(req, res) => {
     .catch(error)
 })
 
-router.delete('/like/:id', tokenAuth.isAuthenticated(),(req, res) => {
+router.delete('/like/:id', (req, res) => {
   const id = req.params.id
   const response = food => {
     res.json({
@@ -63,7 +63,7 @@ router.delete('/like/:id', tokenAuth.isAuthenticated(),(req, res) => {
     .then(response)
     .catch(error)
 })
-router.get('/hate/:id', tokenAuth.isAuthenticated(),(req, res) => {
+router.get('/hate/:id', (req, res) => {
   const id = req.params.id
   const response = food => {
     res.json({
@@ -86,7 +86,7 @@ router.get('/hate/:id', tokenAuth.isAuthenticated(),(req, res) => {
 })
 
 
-router.delete('/hate/:id', tokenAuth.isAuthenticated(),(req, res) => {
+router.delete('/hate/:id', (req, res) => {
   const id = req.params.id
   const response = food => {
     res.json({
@@ -107,7 +107,7 @@ router.delete('/hate/:id', tokenAuth.isAuthenticated(),(req, res) => {
     .catch(error)
 })
 
-router.delete('/', tokenAuth.checkAdmin(), (req, res) => {
+router.delete('/', (req, res) => {
   const response = food => {
     res.json({
       result: 'remove all food.',

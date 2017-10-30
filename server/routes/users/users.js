@@ -144,7 +144,7 @@ router.get('/auth_success', (req, res) => {
 
 router.get('/auth_fail', (req, res) => {
   const signType = req.flash('sign-type')[0]
-  console.log(`${user.info.email} ${signType} fail by ${user.info.auth_provider}`)  
+  console.log(`${signType} fail`)  
   res.cookie('sign', signType)
     .redirect('http://' + config.baseURI + '/sign')
 })
