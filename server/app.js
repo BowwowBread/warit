@@ -24,7 +24,9 @@ import config from './config/auth/config'
 
 //connect to mongodb
 mongoose.Promise = global.Promise
-mongoose.connection.openUri('mongodb://Admin:1004@localhost:27017/warit')
+// mongoose.connection.openUri('mongodb://Admin:1004@localhost:27017/warit')
+mongoose.connection.openUri('mongodb://waritAdmin:1004@localhost:27017/warit')
+
 
 //on connection
 mongoose.connection.on('connected', () => {
@@ -95,12 +97,7 @@ app.use('/api', api)
 //port no
 const client_port = 3000
 const api_port = 3001
-if(process.env.NODE_ENV == "development") {
-  console.log('development env started :')
-  app.listen(3001, () => {
-    console.log("api server start on port 3001")
-  })
-} else {
+if(process.env.NODE_ENV == "production") {
   console.log('production env started :')  
   client.use(express.static(path.join(__dirname, '../public')))
   client.get('*', (req, res) => { res.sendFile(path.join(__dirname, '../public/index.html')); });
@@ -108,6 +105,11 @@ if(process.env.NODE_ENV == "development") {
     console.log('client server start on port 3000');
   });
   http.createServer(app).listen(api_port, () => {
+    console.log('api server start on port 3001');
+  });
+} else {
+  console.log('development env started :')
+  app.listen(api_port, () => {
     console.log('api server start on port 3001');
   });
 }

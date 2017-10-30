@@ -54,7 +54,7 @@ module.exports = {
           fallback: "style-loader",
           use: "sass-loader"
         })
-      }
+      },
     ]
   },
   resolve: {

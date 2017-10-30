@@ -1,9 +1,16 @@
 <template>
   <div id="ranking">
-<b-field @keydown.native.enter="keywordSearch(keyword)">
+    <div class="columns ">
+      <div class="column ">
+      <b-field @keydown.native.enter="keywordSearch(keyword)">
         <b-input v-if="!searchLoading" v-on:input.native="searching" v-model="search" placeholder="음식점 검색" type="search" icon="search"></b-input>
-        <b-input v-else v-on:input.native="searching" v-model="search" placeholder="검색중..." searchLoading type="search" icon="search"></b-input>        
+        <b-input v-else v-on:input.native="searching" v-model="search" placeholder="검색중..." searchLoading type="search" icon="search"></b-input>      
       </b-field>
+      </div>
+      <div class="column is-2">
+      <button class="button is-success randomButton" @click="getRandomFood">아몰랑</button>  
+      </div>
+      </div>
 
         <b-table
         :data="foodLists"
@@ -23,13 +30,33 @@
                 <b-table-column field="likeCount" label="좋아요 수" sortable centered width="150">
                     {{ props.row.likeCount }}
                 </b-table-column>
-                <b-table-column field="like" label="좋아요" width="100">
-                    <button class="button is-warning" v-if="!props.row.like" @click="toggle('like', props.row)">O</button>
-                    <button class="button is-success"v-else @click="toggle('unlike', props.row)">X</button>
+                <b-table-column field="like" label="좋아요" width="100" centered>
+                    <button class="button is-warning" v-if="!props.row.like" @click="toggle('like', props.row)">
+                      <b-icon
+                        icon="favorite_border"
+                        size="is-medium">
+                      </b-icon>
+                    </button>
+                    <button class="button is-warning"v-else @click="toggle('unlike', props.row)">
+                      <b-icon
+                        icon="favorite"
+                        size="is-medium">
+                      </b-icon>
+                    </button>
                 </b-table-column>
-                <b-table-column field="hate" label="싫어요" width="100">
-                    <button class="button is-warning"v-if="!props.row.hate" @click="toggle('hate', props.row)">O</button>        
-                    <button class="button is-success" v-else @click="toggle('unhate', props.row)">X</button>  
+                <b-table-column field="hate" label="싫어요" width="100" centered>
+                    <button class="button is-warning"v-if="!props.row.hate" @click="toggle('hate', props.row)">
+                        <b-icon
+                          icon="remove_circle_outline"
+                          size="is-medium">
+                        </b-icon>
+                      </button>        
+                    <button class="button is-warning" v-else @click="toggle('unhate', props.row)">
+                        <b-icon
+                          icon="remove_circle"
+                          size="is-medium">
+                        </b-icon>
+                      </button>  
                 </b-table-column>
             </template>
             <template slot="empty">
@@ -103,6 +130,77 @@ export default {
       'UNHATE',
       'fetchFoods'
     ]),
+    getRandomFood() {
+      const randomFood = this.foodLists[Math.floor(Math.random()*this.foodLists.length)]
+      
+      this.$dialog.alert({
+        title: '아몰랑',
+        message: 
+        `  <div data-v-48c898da="" class="b-table">
+    <div class="table-wrapper">
+      <table class="table has-mobile-cards">
+        <thead>
+          <tr>
+            <th style="width: 200px;">
+              <div class="th-wrap">음식점명
+                <span class="icon is-small" style="display: none;">
+                  <i class="mdi">arrow_upward</i>
+                </span>
+              </div>
+            </th>
+            <th class="" style="width: 400px;">
+              <div class="th-wrap">카테고리
+                <span class="icon is-small" style="display: none;">
+                  <i class="mdi">arrow_upward</i>
+                </span>
+              </div>
+            </th>
+            <th class="" style="width: 300px;">
+              <div class="th-wrap">주소
+                <span class="icon is-small" style="display: none;">
+                  <i class="mdi">arrow_upward</i>
+                </span>
+              </div>
+            </th>
+            <th style="width: 150px;">
+              <div class="th-wrap is-centered">좋아요 수
+                <span class="icon is-small" style="display: none;">
+                  <i class="mdi">arrow_upward</i>
+                </span>
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="">
+            <td data-v-48c898da="" data-label="음식점명" class="">
+              <span>
+                ${randomFood.place_name}
+              </span>
+            </td>
+            <td data-v-48c898da="" data-label="카테고리" class="">
+              <span>
+                ${randomFood.category_name}
+              </span>
+            </td>
+            <td data-v-48c898da="" data-label="주소" class="">
+              <span>
+                ${randomFood.address}
+              </span>
+            </td>
+            <td data-v-48c898da="" data-label="좋아요 수" class="has-text-centered">
+              <span>
+                ${randomFood.likeCount}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>`,
+        confirmText: 'OK'
+      })
+    },
     fetchFoodList() {
       this.isLoading = true
       this.fetchFoods()
@@ -162,7 +260,7 @@ export default {
         this.$snackbar.open({
           message: `${food.place_name} 음식점 좋아요 취소`,
           duration: 3000,          
-          type: 'is-success',
+          type: 'is-warning',
           position: 'is-bottom-right',
           actionText: '취소하기',
           onAction: () => {
@@ -174,7 +272,7 @@ export default {
         this.$snackbar.open({
           message: `${food.place_name} 음식점 싫어요`,
           duration: 3000,          
-          type: 'is-warning',
+          type: 'is-success',
           position: 'is-bottom-right',
           actionText: '취소하기',
           onAction: () => {
@@ -198,3 +296,6 @@ export default {
   }
 }
 </script>
+<style src="../../assets/css/ranking.scss" scoped>
+
+</style>
