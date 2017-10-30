@@ -16,11 +16,11 @@ export default {
     }
   },
   created() {
-    if(token != null) {
-      this.$router.push({
-        path: '/'
-      })
-    }
+    // if(token != null) {
+    //   this.$router.push({
+    //     path: '/'
+    //   })
+    // }
     const sign = this.$cookie.get('sign')
       if(sign == "error") {
         console.log(sign)
