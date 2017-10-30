@@ -9,46 +9,40 @@
 </template>
 
 <script>
-export default {
-  name: 'sign',
-  data () {
-    return {
-    }
-  },
-  created() {
-    // if(token != null) {
-    //   this.$router.push({
-    //     path: '/'
-    //   })
-    // }
-    const sign = this.$cookie.get('sign')
-      if(sign == "error") {
+  export default {
+    name: 'sign',
+    data() {
+      return {}
+    },
+    created() {
+  
+      const sign = this.$cookie.get('sign')
+      if (sign == "error") {
         console.log(sign)
         this.$toast.open({
-            duration: 3000,
-             message: `로그인에 실패하였습니다. 이미 등록된 계정입니다`,
-            position: 'is-top',
-            type: 'is-danger'
-        })
-      } else {
-        this.$toast.open({
-            duration: 3000,
-             message: `로그인에 실패하였습니다.`,
-            position: 'is-top',
-            type: 'is-danger'
+          duration: 3000,
+          message: `로그인에 실패하였습니다. 이미 등록된 계정입니다`,
+          position: 'is-top',
+          type: 'is-danger'
         })
       }
-      this.$cookie.delete('sign') 
-  },
-  methods: {
-    auth_sign(auth) {
-      let baseURI = location.protocol + '//' + location.hostname + ':' + 3001 + '/api'
-      if(auth == 'google') {
-        baseURI = 'https://ec2-13-125-41-251.ap-northeast-2.compute.amazonaws.com:3001/api'
+      this.$cookie.delete('sign')
+      if (token != null) {
+        this.$router.push({
+          path: '/'
+        })
       }
-      location.href=`${baseURI}/auth/${auth}`
+    },
+    methods: {
+      auth_sign(auth) {
+        let baseURI = location.protocol + '//' + location.hostname + ':' + 3001 + '/api'
+        if (auth == 'google') {
+          baseURI = 'https://ec2-13-125-41-251.ap-northeast-2.compute.amazonaws.com:3001/api'
+        }
+        location.href = `${baseURI}/auth/${auth}`
+      }
     }
   }
-}
 </script>
+
 <style src="../../assets/css/sign.scss" scoped>
