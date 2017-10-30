@@ -109,7 +109,7 @@ router.get('/auth_success', (req, res) => {
     res.cookie("email", email)
       .cookie("token", token)
       .cookie('sign', signType)
-      .redirect('http://' + config.baseURI)
+      .redirect(config.baseURI)
   } else if (signType == "signup") {
     //회원가입 성공
     const userInfo = {
@@ -125,7 +125,7 @@ router.get('/auth_success', (req, res) => {
       res.cookie("email", email)
         .cookie("token", token)
         .cookie('sign', signType)
-        .redirect('http://' + config.baseURI)
+        .redirect(config.baseURI)
     }
 
     const error = err => {
@@ -146,7 +146,7 @@ router.get('/auth_fail', (req, res) => {
   const signType = req.flash('sign-type')[0]
   console.log(`${signType} fail`)  
   res.cookie('sign', signType)
-    .redirect('http://' + config.baseURI + '/sign')
+    .redirect(config.baseURI + '/sign')
 })
 
 /**
