@@ -5,11 +5,12 @@ import cors from 'cors'
 import path from 'path'
 import passport from 'passport'
 import session from 'express-session'
-import cookie from 'cookie-parser' 
+import cookie from 'cookie-parser'
 import flash from 'connect-flash'
 import http from 'http';
 import https from 'https';
 import httpsRedrect from 'express-https-redirect';
+import fs from 'fs';
 
 var app = express()
 var client = express()
@@ -68,7 +69,9 @@ app.use(cookie())
 app.set('jwt-secret', config.secret)
 app.use(passport.initialize())
 app.use(passport.session())
-app.use(bodyparser.urlencoded({ extended: false }));
+app.use(bodyparser.urlencoded({
+  extended: false
+}));
 app.use(bodyparser.json());
 //adding middleware - cors
 app.use(cors())
@@ -94,22 +97,30 @@ app.use(bodyparser.json())
 //routes
 app.use('/api', api)
 
+
+
 //port no
 const client_port = 3000
 const api_port = 3001
-if(process.env.NODE_ENV == "production") {
-  console.log('production env started :')  
-  client.use(express.static(path.join(__dirname, '../public')))
-  client.get('*', (req, res) => { res.sendFile(path.join(__dirname, '../public/index.html')); });
-  http.createServer(client).listen(client_port, () => {
-    console.log('client server start on port 3000');
-  });
-  http.createServer(app).listen(api_port, () => {
+if (process.env.NODE_ENV == "development") {
+  console.log('development env started :')
+  app.listen(api_port, () => {
     console.log('api server start on port 3001');
   });
 } else {
-  console.log('development env started :')
-  app.listen(api_port, () => {
+    console.log('production env started :')
+  client.use(express.static(path.join(__dirname, '../public')))
+  client.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/index.html'));
+  });
+  const options = {
+    key: fs.readFileSync('./keys/private.pem'),
+    cert: fs.readFileSync('./keys/public.pem')
+  };
+  https.createServer(options, client).listen(client_port, () => {
+    console.log('client server start on port 3000');
+  });
+  https.createServer(options, app).listen(api_port, () => {
     console.log('api server start on port 3001');
   });
 }

@@ -156,7 +156,7 @@ export default {
       'fetchFoods'
     ]),
     getRandomFood() {
-      const randomFood = this.foodLists[Math.floor(Math.random()*this.foodLists.length)]
+      const randomFood = this.foodList[Math.floor(Math.random()*this.foodList.length)]
       
       this.$dialog.alert({
         title: '아몰랑',
