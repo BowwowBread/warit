@@ -76,7 +76,7 @@
             position: 'is-top',
             type: 'is-success'
         })
-      } else if(sign == "signUp") {
+      } else if(sign == "signup") {
         this.$toast.open({
             duration: 3000,
             message: `회원가입 성공!`,

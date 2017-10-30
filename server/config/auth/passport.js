@@ -68,7 +68,6 @@ passport.use('kakao', new KakaoStrategy(
 passport.use('facebook', new FacebookStrategy(
   auth.facebook,
   function (req, accessToken, refreshToken, profile, done) {
-    console.log(profile)
     const email = profile.emails[0].value
     const auth_provider = profile.provider
     User.findOne({
