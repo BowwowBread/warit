@@ -30,6 +30,13 @@ export default {
             position: 'is-top',
             type: 'is-danger'
         })
+      } else {
+        this.$toast.open({
+            duration: 3000,
+             message: `로그인에 실패하였습니다.`,
+            position: 'is-top',
+            type: 'is-danger'
+        })
       }
       this.$cookie.delete('sign') 
   },
