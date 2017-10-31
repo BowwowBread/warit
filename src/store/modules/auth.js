@@ -3,7 +3,10 @@ import * as types from '../mutation-types'
 const state = {
   info: {
     email: null,
-    token: null
+    username: null,
+    auth_provider: null,
+    profile_image: null,
+    token: null,
   }
 }
 
@@ -41,7 +44,10 @@ const actions = {
       api.get('/auth')
         .then((res) => {
           const info = {
-            email: res.data.email,
+            email: res.data.userInfo.email,
+            username: res.data.userInfo.username,
+            auth_provider: res.data.userInfo.auth_provider,
+            profile_image: res.data.userInfo.profile_image,
             token,
           }
           commit(types.TOKEN_AUTH, info)

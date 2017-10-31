@@ -1,9 +1,12 @@
 import jwt from 'jsonwebtoken'
 import compose from 'composable-middleware'
 
-function signToken(email, secret) {
+function signToken(user, secret) {
   return jwt.sign({
-    email: email
+    email: user.email,
+    username : user.username,
+    auth_provider : user.auth_provider,
+    profile_image : user.profile_image,
   }, secret, {
     expiresIn: '7d'
   })
@@ -48,7 +51,10 @@ function isAuthenticated() {
     })
     .use(function (req, res, next) {
       req.user = {
-        email: req.user.email
+        email: req.user.email,
+        username: req.user.username,
+        auth_provider: req.user.auth_provider,
+        profile_image: req.user.profile_image
       }
       next()
     })

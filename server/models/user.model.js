@@ -25,7 +25,15 @@ const UserSchema = mongoose.Schema({
       type: String,
       required: true
     },
+    username: {
+      type: String,
+      require: true
+    },
     auth_provider: {
+      type: String,
+      required: true
+    },
+    profile_image: {
       type: String,
       required: true
     }

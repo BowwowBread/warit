@@ -61,7 +61,8 @@
           .then((res) => {
             this.email = res.email
           })
-          .catch(() => {
+          .catch((err) => {
+            console.log(err)
             this.$router.push({
               path: '/sign'
             })
@@ -74,6 +75,7 @@
               this.email = res.email
             })
             .catch((err) => {
+              console.log(err)              
               this.$router.push({
                 path: '/sign'
               })

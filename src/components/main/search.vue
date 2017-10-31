@@ -7,9 +7,10 @@
         <b-input v-else v-on:input.native="searching" v-model="search" placeholder="검색중..." searchLoading type="search" icon="search"></b-input>      
       </b-field>
       </div>
-      <div class="column is-2">
+      <div class="column is-2 is-hidden-mobile">
       <button class="button is-success randomButton" @click="getRandomFood">아몰랑</button>  
       </div>
+      <button class="button randomBUtton is-block-mobile is-hidden-tablet" @click="getRandomFood">아몰랑</button>
       </div>
         <b-pagination
             :total="total"
@@ -223,7 +224,8 @@ export default {
       </table>
     </div>
   </div>`,
-        confirmText: 'OK'
+        confirmText: 'OK',
+        canCancel: true
       })
     },
     fetchFoodList() {

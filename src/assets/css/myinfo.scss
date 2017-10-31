@@ -1,11 +1,39 @@
-.button {
-  width: 20rem;
-  height: 6rem;
-  line-height: 0rem;
-  display: block;
-  margin: 2rem 0
+#myinfo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-.button-group {
-  widtH: 20rem;
-  margin: 10rem auto
+.card {
+  margin: -10rem 2rem 0 2rem;
+  width: 30rem;
+  min-width: 300px;
+}
+.card-content {
+  padding-bottom: 1rem;
+}
+.button {
+  line-height: 0;
+  height: 3rem;
+}
+.title {
+  margin: 0;
+  padding-bottom: .5rem;
+}
+
+.button.is-outlined {
+  font-weight: bold;
+}
+
+.tags {
+  float: right;
+  margin: 0;
+}
+@media screen and (max-width: 768px) {
+
+  .card-content{
+    padding: .5rem;
+    padding-bottom: .7rem;
+  }
+
+
 }

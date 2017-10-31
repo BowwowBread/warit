@@ -31,7 +31,10 @@ passport.use('kakao', new KakaoStrategy(
   auth.kakao,
   function (req, accessToken, refreshToken, profile, done) {
     const email = profile._json.kaccount_email
+    const username = profile.displayName
     const auth_provider = profile.provider
+    const profile_image = profile._json.properties.profile_image
+    console.log(profile)    
     User.findOne({
       "info.email": email,
       "info.auth_provider": auth_provider
@@ -50,8 +53,10 @@ passport.use('kakao', new KakaoStrategy(
           } else {
             const userInfo = {
               info: {
-                email: email,
-                auth_provider: auth_provider
+                email,
+                username,
+                auth_provider,
+                profile_image 
               }
             }
             req.flash('sign-type', 'signup')
@@ -68,8 +73,16 @@ passport.use('kakao', new KakaoStrategy(
 passport.use('facebook', new FacebookStrategy(
   auth.facebook,
   function (req, accessToken, refreshToken, profile, done) {
-    const email = profile.emails[0].value
+    console.log(profile)    
+    let email = ""
+    if(profile.hasOwnProperty('emails')) {
+      email = profile.emails[0].value      
+    } else {
+      email = profile.displayName+"@facebook.com"      
+    }
+    const username = profile.displayName
     const auth_provider = profile.provider
+    const profile_image = profile.photos[0].value
     User.findOne({
       "info.email": email,
       "info.auth_provider": auth_provider
@@ -88,8 +101,10 @@ passport.use('facebook', new FacebookStrategy(
           } else {
             const userInfo = {
               info: {
-                email: email,
-                auth_provider: auth_provider
+                email,
+                username,
+                auth_provider,
+                profile_image 
               }
             }
             req.flash('sign-type', 'signup')
@@ -106,7 +121,10 @@ passport.use('google', new GoogleStrategy(
   auth.google,
   function (req, accessToken, refreshToken, profile, done) {
     const email = profile.emails[0].value
+    const username = profile.displayName
     const auth_provider = profile.provider
+    const profile_image = profile.photos[0].value
+    console.log(profile)    
     User.findOne({
       "info.email": email,
       "info.auth_provider": auth_provider

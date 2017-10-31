@@ -29,17 +29,15 @@ export default {
             duration: 3000,
              message: `로그인에 실패하였습니다. 이미 등록된 계정입니다`,
             position: 'is-top',
-            type: 'is-danger'
+            type: 'is-warning'
         })
       }
-      this.$cookie.delete('sign') 
+      this.$cookie.delete('sign')
   },
   methods: {
     auth_sign(auth) {
       let baseURI = location.protocol + '//' + location.hostname + ':' + 3001 + '/api'
-      if(auth == 'google') {
-        baseURI = 'https://ec2-13-125-41-251.ap-northeast-2.compute.amazonaws.com:3001/api'
-      }
+
       location.href=`${baseURI}/auth/${auth}`
     }
   }

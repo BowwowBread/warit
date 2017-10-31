@@ -24,7 +24,7 @@ router.get('/kakao/callback',
 
 router.get('/facebook',
   passport.authenticate('facebook', {
-    scope: ['public_profile', 'email']
+    scope: ['public_profile', 'email',]
   })
 )
 
@@ -63,7 +63,7 @@ router.get('/logout', tokenAuth.isAuthenticated(), (req, res) => {
 router.get('/', tokenAuth.isAuthenticated(), (req, res) => {
   res.json({
     result: 'success',
-    email: req.user.email,
+    userInfo: req.user,
     accessToken: req.user.accessToken
   })
 })

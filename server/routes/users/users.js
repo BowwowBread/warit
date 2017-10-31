@@ -67,7 +67,8 @@ router.post('/signup', (req, res) => {
   const userInfo = {
     info: {
       email: req.body.email,
-      auth_provider: req.body.auth_provider
+      username: req.body.username,
+      auth_provider: req.body.auth_provider,
     }
   }
 
@@ -99,30 +100,30 @@ router.post('/signup', (req, res) => {
 
 router.get('/auth_success', (req, res) => {
   const signType = req.flash('sign-type')[0]
-  const email = req.user.info.email
-  const auth_provider = req.user.info.auth_provider
+  const userInfo = {
+      info: {
+        email: req.user.info.email,
+        username: req.user.info.username,
+        auth_provider: req.user.info.auth_provider,
+        profile_image: req.user.info.profile_image
+      }
+    }
   if (signType == "login") {
     //로그인 성공
     const secret = req.app.get('jwt-secret')
-    const token = tokenAuth.signToken(email, secret)
-    console.log(`${email} login success by ${auth_provider}`)
-    res.cookie("email", email)
+    const token = tokenAuth.signToken(userInfo.info, secret)
+    console.log(`${userInfo.info.email} login success by ${userInfo.infoauth_provider}`)
+    res.cookie("email", userInfo.info.email)
       .cookie("token", token)
       .cookie('sign', signType)
       .redirect(config.baseURI)
   } else if (signType == "signup") {
     //회원가입 성공
-    const userInfo = {
-      info: {
-        email: email,
-        auth_provider: auth_provider
-      }
-    }
     const response = user => {
       const secret = req.app.get('jwt-secret')
-      const token = tokenAuth.signToken(email, secret)
+      const token = tokenAuth.signToken(userInfo.info, secret)
       console.log(`${user.info.email} signup success by ${user.info.auth_provider}`)    
-      res.cookie("email", email)
+      res.cookie("email", userInfo.info.email)
         .cookie("token", token)
         .cookie('sign', signType)
         .redirect(config.baseURI)
