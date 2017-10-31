@@ -102,8 +102,9 @@ app.use('/api', api)
 //port no
 const client_port = 3000
 const api_port = 3001
+var env = (process.env.NODE_ENV || 'test').trim();
   
-if (process.env.NODE_ENV === "test") {
+if (env == "test") {
   console.log('development env started :')
   app.listen(api_port, () => {
     console.log('api server start on port 3001');

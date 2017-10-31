@@ -132,7 +132,10 @@ export default {
       'fetchFoods'
     ]),
     getRandomFood() {
-      const randomFood = this.foodLists[Math.floor(Math.random()*this.foodLists.length)]
+      let randomFoods = this.foodList.filter((food) => {
+        return !food.hate
+      })
+      let randomFood = randomFoods[Math.floor(Math.random()*randomFoods.length)]
       
       this.$dialog.alert({
         title: '아몰랑',
