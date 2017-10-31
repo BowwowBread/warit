@@ -143,8 +143,10 @@ passport.use('google', new GoogleStrategy(
           } else {
             const userInfo = {
               info: {
-                email: email,
-                auth_provider: auth_provider
+                email,
+                username,
+                auth_provider,
+                profile_image 
               }
             }
             req.flash('sign-type', 'signup')
