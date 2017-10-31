@@ -25,6 +25,7 @@ import config from './config/auth/config'
 
 //connect to mongodb
 mongoose.Promise = global.Promise
+// mongoose.connection.openUri('mongodb://Admin:1004@localhost:27017/warit')
 mongoose.connection.openUri('mongodb://Admin:1004@localhost:27017/warit')
 
 
@@ -101,8 +102,8 @@ app.use('/api', api)
 //port no
 const client_port = 3000
 const api_port = 3001
-
-let env = (process.env.NODE_ENV || 'development').trim();
+console.log(process.env.NODE_ENV)
+var env = (process.env.NODE_ENV || 'development').trim();
 if (env === "development") {
   console.log('development env started :')
   app.listen(api_port, () => {
