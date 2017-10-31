@@ -200,7 +200,6 @@ export default {
     </div>
   </div>`,
         confirmText: 'OK',
-        canCancel: true
       })
     },
     fetchFoodList() {
