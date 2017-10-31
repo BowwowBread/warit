@@ -102,15 +102,14 @@ app.use('/api', api)
 //port no
 const client_port = 3000
 const api_port = 3001
-console.log(process.env.NODE_ENV)
-var env = (process.env.NODE_ENV || 'development').trim();
-if (env === "development") {
+  
+if (process.env.NODE_ENV === "test") {
   console.log('development env started :')
   app.listen(api_port, () => {
     console.log('api server start on port 3001');
   });
 } else {
-    console.log('production env started :')
+  console.log('production env started :')
   client.use(express.static(path.join(__dirname, '../public')))
   client.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../public/index.html'));
