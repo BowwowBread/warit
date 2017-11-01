@@ -93,7 +93,7 @@
         duration: 3000,
         message: `내 위치를 검색중입니다`,
         position: 'is-bottom',
-        type: 'is-light'
+        type: 'is-black'
       })
       this.UPDATE_LOCATION()
       .then((CurLatLng) => {
@@ -112,6 +112,15 @@
           this.map.setBounds(bounds)
         }
        this.isLoading = false        
+      })
+      .catch((err) => {
+        this.$toast.open({
+          duration: 3000,
+          message: `위치 정보를 확인할 수 없습니다.`,
+          position: 'is-bottom',
+          type: 'is-warning'
+        })
+        this.isLoading = false
       })
       }
     },

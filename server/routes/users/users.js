@@ -112,7 +112,7 @@ router.get('/auth_success', (req, res) => {
     //로그인 성공
     const secret = req.app.get('jwt-secret')
     const token = tokenAuth.signToken(userInfo.info, secret)
-    console.log(`${userInfo.info.email} login success by ${userInfo.infoauth_provider}`)
+    console.log(`${userInfo.info.email} login success by ${userInfo.infoa.uth_provider}`)
     res.cookie("email", userInfo.info.email)
       .cookie("token", token)
       .cookie('sign', signType)
