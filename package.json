@@ -8,7 +8,8 @@
     "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
     "start": "concurrently \"npm run server\" \"npm run dev\"",
-    "serve": "pm2 start ecosystem.config.js --env production"    
+    "serve": "pm2 start ecosystem.config.js --env production",
+    "test": "git pull origin master && npm run build && pm2 start ecosystem.config.js --env production"    
   },
   "author": "",
   "license": "ISC",
