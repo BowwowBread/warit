@@ -4,7 +4,7 @@
     <div class="form is-hidden-mobile">
       <div class="level">
         <div class="level-left">
-          <button class="button is-primary is-outlined" @click="moveCurLatLng">내 위치로 이동</button>    
+          <button class="button is-primary is-outlined" @click="updateLocation">내 위치</button>    
           <button class="button is-primary is-outlined" @click="categorySearch">내 위치 검색하기</button>        
           </div>
         <div class="level-right">
