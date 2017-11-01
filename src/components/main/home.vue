@@ -69,6 +69,9 @@
     },
     created() {
       const sign = this.$cookie.get('sign')
+      const token = this.$cookie.get('token')
+      if(token != null) {
+
       if(sign == "login") {
         this.$toast.open({
             duration: 3000,
@@ -84,12 +87,6 @@
             type: 'is-success'
         })
       }
-      this.$toast.open({
-        duration: 3000,
-        message: `내 위치를 검색중입니다`,
-        position: 'is-bottom',
-        type: 'is-light'
-      })
       this.$cookie.delete('sign')      
       this.isLoading = true
       this.UPDATE_LOCATION()
@@ -110,6 +107,7 @@
         }
        this.isLoading = false        
       })
+      }
     },
     computed: {
         ...mapGetters([
