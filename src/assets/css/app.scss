@@ -3,7 +3,7 @@
   padding: 0;
 }
 .router-view {
-  height: calc(100vh - 3.3rem)
+  height: calc(100vh - 3.25rem)
 }
 .control {
   margin-top: 1rem;
@@ -19,6 +19,16 @@
 
   #app{
     margin-top: 3rem;
+  }
+  .router-view {
+    height: calc(100vh - 3rem) !important
+  }
+
+}
+@media screen and (max-width: 1126px) {
+
+  .router-view {
+    height: calc(100vh - 6.5rem)
   }
 
 

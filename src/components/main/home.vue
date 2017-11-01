@@ -29,7 +29,7 @@
         </div>
         <div class="column">
           <b-field class="is-primary" @keydown.native.enter="keywordSearch(keyword)">
-            <b-input v-if="!loading"v-model="keyword" placeholder="지역 검색" type="search" icon="search" style="margin-top: 0 !important; width:100%"></b-input>
+            <b-input v-if="!loading"v-model="keyword" placeholder="지역 검색 (반경 500m 이내)" type="search" icon="search" style="margin-top: 0 !important; width:100%"></b-input>
             <b-input v-else v-model="keyword" placeholder="검색중..." loading type="search" icon="search" style="margin-top: 0 !important; width:100%"></b-input>        
             <p class="control" style="margin-top: 0 !important">
               <button v-if="!loading" class="button is-primary is-outlined" @click="keywordSearch(keyword)" >검색</button>
@@ -89,6 +89,12 @@
       }
       this.$cookie.delete('sign')      
       this.isLoading = true
+      this.$toast.open({
+        duration: 3000,
+        message: `내 위치를 검색중입니다`,
+        position: 'is-bottom',
+        type: 'is-light'
+      })
       this.UPDATE_LOCATION()
       .then((CurLatLng) => {
         this.CurLatLng = CurLatLng
