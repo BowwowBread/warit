@@ -22,7 +22,7 @@
     <div class="form is-inline-mobile is-hidden-tablet">
       <div class="columns is-multiline is-mobile">
         <div class="column is-half">
-          <button style="width:100%" class="button is-primary is-outlined" @click="moveCurLatLng">내 위치로 이동</button>    
+          <button style="width:100%" class="button is-primary is-outlined" @click="updateLocation">내 위치</button>    
         </div>
         <div class="column is-half">
           <button style="width:100%" class="button is-primary is-outlined" @click="categorySearch">내 위치 검색하기</button>        
@@ -84,6 +84,12 @@
             type: 'is-success'
         })
       }
+      this.$toast.open({
+        duration: 3000,
+        message: `내 위치를 검색중입니다`,
+        position: 'is-bottom',
+        type: 'is-light'
+      })
       this.$cookie.delete('sign')      
       this.isLoading = true
       this.UPDATE_LOCATION()
@@ -122,6 +128,12 @@
         'fetchFoods'
       ]),
       updateLocation() {
+      this.$toast.open({
+        duration: 3000,
+        message: `내 위치를 검색중입니다`,
+        position: 'is-bottom',
+        type: 'is-light'
+      })
       this.UPDATE_LOCATION()
         .then((CurLatLng) => {
           this.CurLatLng = CurLatLng

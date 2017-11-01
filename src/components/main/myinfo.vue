@@ -21,9 +21,9 @@
           </div>
         </div>
       </div>
-      <footer class="card-footer">
-        <button class="button card-footer-item is-outlined" :class="{'is-warning': userInfo.auth_provider == 'kakao', 'is-info': userInfo.auth_provider == 'facebook', 'default': userInfo.auth_provider == 'google'}" @click="logout">로그아웃</button>
-        <button class="button card-footer-item is-outlined" :class="{'is-warning': userInfo.auth_provider == 'kakao', 'is-info': userInfo.auth_provider == 'facebook', 'default': userInfo.auth_provider == 'google'}" @click="unregister_user">회원탈퇴</button>
+      <footer class="card-footer columns">
+        <button class="button card-footer-item column" :class="{'is-warning': userInfo.auth_provider == 'kakao', 'is-info': userInfo.auth_provider == 'facebook', 'default': userInfo.auth_provider == 'google'}" @click="logout">로그아웃</button>
+        <button class="button card-footer-item column" :class="{'is-warning': userInfo.auth_provider == 'kakao', 'is-info': userInfo.auth_provider == 'facebook', 'default': userInfo.auth_provider == 'google'}" @click="unregister_user">회원탈퇴</button>
       </footer>
     </div>
   </div>

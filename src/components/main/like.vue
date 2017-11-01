@@ -1,5 +1,6 @@
 <template>
   <div id="like">
+    <b-loading :active.sync="isLoading" :canCancel="false"></b-loading>
     <div class="columns ">
       <div class="column ">
       <b-field @keydown.native.enter="keywordSearch(keyword)">
@@ -8,9 +9,9 @@
       </b-field>
       </div>
       <div class="column is-2 is-hidden-mobile">
-      <button class="button is-success randomButton" @click="getRandomFood">아몰랑</button>  
+      <button class="button is-danger randomButton" @click="getRandomFood">아몰랑</button>  
       </div>
-      <button class="button randomBUtton is-block-mobile is-hidden-tablet" @click="getRandomFood">아몰랑</button>
+      <button class="button is-danger randomButton is-block-mobile is-hidden-tablet" @click="getRandomFood">아몰랑</button>
       </div>
         <b-pagination
             :total="total"
@@ -24,7 +25,7 @@
         </b-pagination>
               <hr>        
         <b-table
-        :data="foodLists"
+        :data="isEmpty ? [] : foodLists"
         backend-sorting
         @sort="onSort"        
         >
@@ -97,7 +98,7 @@ export default {
     return {
       search: "",
       foodList: [],
-      isEmpty: false,
+      isEmpty: null,
       isLoading: true,
       searchLoading: false,
       hasMobileCards: true,
@@ -227,7 +228,7 @@ export default {
       </table>
     </div>
   </div>`,
-        confirmText: 'OK',
+        confirmText: '닫기',
       })
     },
     fetchFoodList() {
@@ -235,7 +236,6 @@ export default {
       this.fetchFoods()
       .then(() => {
       this.foodList = this.getLikeFoodList
-      this.isLoading = false
       if(this.sortField == "place_name") {
         this.foodList = this.foodList.sort((a, b) => {
           if(this.sortOrder == "asc") {
@@ -255,6 +255,10 @@ export default {
           }
         })
       }
+      this.isLoading = false      
+    })
+    .catch(() => {
+      this.isLoading = false      
     })
     },
     onPageChange(page) {
