@@ -9,7 +9,7 @@
           </div>
         <div class="level-right">
           <b-field class="is-primary" @keydown.native.enter="keywordSearch(keyword)">
-            <b-input  v-if="!loading"v-model="keyword" placeholder="지역 검색" type="search" icon="search" style="margin-top: 0 !important"></b-input>
+            <b-input  v-if="!loading"v-model="keyword" placeholder="지역 검색 (500m 이내)" type="search" icon="search" style="margin-top: 0 !important"></b-input>
             <b-input v-else v-model="keyword" placeholder="검색중..." loading type="search" icon="search" style="margin-top: 0 !important"></b-input>        
             <p class="control" style="margin-top: 0 !important">
               <button v-if="!loading" class="button is-primary is-outlined" @click="keywordSearch(keyword)" >검색</button>
@@ -29,7 +29,7 @@
         </div>
         <div class="column">
           <b-field class="is-primary" @keydown.native.enter="keywordSearch(keyword)">
-            <b-input v-if="!loading"v-model="keyword" placeholder="지역 검색 (반경 500m 이내)" type="search" icon="search" style="margin-top: 0 !important; width:100%"></b-input>
+            <b-input v-if="!loading"v-model="keyword" placeholder="지역 검색 (500m 이내)" type="search" icon="search" style="margin-top: 0 !important; width:100%"></b-input>
             <b-input v-else v-model="keyword" placeholder="검색중..." loading type="search" icon="search" style="margin-top: 0 !important; width:100%"></b-input>        
             <p class="control" style="margin-top: 0 !important">
               <button v-if="!loading" class="button is-primary is-outlined" @click="keywordSearch(keyword)" >검색</button>
@@ -74,14 +74,14 @@
 
       if(sign == "login") {
         this.$toast.open({
-            duration: 3000,
+            duration: 2000,
             message: `로그인 성공!`,
             position: 'is-top',
             type: 'is-success'
         })
       } else if(sign == "signup") {
         this.$toast.open({
-            duration: 3000,
+            duration: 2000,
             message: `회원가입 성공!`,
             position: 'is-top',
             type: 'is-success'
@@ -89,12 +89,12 @@
       }
       this.$cookie.delete('sign')      
       this.isLoading = true
-      this.$toast.open({
+      this.addToast(this.$toast.open({
         duration: 3000,
         message: `내 위치를 검색중입니다`,
         position: 'is-bottom',
         type: 'is-black'
-      })
+      }))
       this.UPDATE_LOCATION()
       .then((CurLatLng) => {
         this.CurLatLng = CurLatLng
@@ -114,12 +114,12 @@
        this.isLoading = false        
       })
       .catch((err) => {
-        this.$toast.open({
+        this.addToast(this.$toast.open({
           duration: 3000,
           message: `위치 정보를 확인할 수 없습니다.`,
           position: 'is-bottom',
           type: 'is-warning'
-        })
+        }))
         this.isLoading = false
       })
       }
@@ -128,7 +128,8 @@
         ...mapGetters([
         'getLatLng',
         'getCurLatLng',
-        'getFoodLists'
+        'getFoodLists',
+        'getToast'
       ]),
     },
     methods: {
@@ -138,21 +139,24 @@
         'CATEGORY_SEARCH',
         'KEYWORD_SEARCH',
         'FOOD_LIST',
-        'fetchFoods'
+        'fetchFoods',
+        'addToast',
+        'closeToast',
       ]),
       updateLocation() {
-      this.$toast.open({
-        duration: 3000,
-        message: `내 위치를 검색중입니다`,
-        position: 'is-bottom',
-        type: 'is-light'
-      })
-      this.UPDATE_LOCATION()
-        .then((CurLatLng) => {
-          this.CurLatLng = CurLatLng
-          const center = new daum.maps.LatLng(this.CurLatLng.lat, this.CurLatLng.lng)
-          this.map.setLevel(2)          
-          this.map.panTo(center)                    
+        this.closeToast()
+        this.addToast(this.$toast.open({
+          duration: 3000,
+          message: `내 위치를 검색중입니다`,
+          position: 'is-bottom',
+          type: 'is-black'
+        }))
+        this.UPDATE_LOCATION()
+          .then((CurLatLng) => {
+            this.CurLatLng = CurLatLng
+            const center = new daum.maps.LatLng(this.CurLatLng.lat, this.CurLatLng.lng)
+            this.map.setLevel(2)          
+            this.map.panTo(center)                    
         })
       },
       moveCurLatLng() {
@@ -184,13 +188,14 @@
           customOverlay.setMap(this.map)
       },
       keywordSearch(keyword) {
+        this.closeToast()        
         if(keyword == "") {
-          this.$toast.open({
-            duration: 3000,
+          this.addToast(this.$toast.open({
+            duration: 1500,
             message: `검색어를 입력해주세요`,
             position: 'is-bottom',
             type: 'is-danger'
-          })
+          }))
           return
         }
         let foodList = []      
@@ -217,12 +222,12 @@
                 }
                 this.SET_LOCATION(LatLng)
                 this.loading = false
-                this.$toast.open({
-                  duration: 3000,
+                this.addToast(this.$toast.open({
+                  duration: 2000,
                   message: `${keyword} 주변 음식점을 검색합니다`,
                   position: 'is-bottom',
                   type: 'is-success'
-                })
+                }))
               })
               .catch((err) => {
                 console.log(err)
@@ -230,30 +235,30 @@
               })
             }
           } else if (status === daum.maps.services.Status.ZERO_RESULT) {
-            this.$toast.open({
-              duration: 3000,
+            this.addToast(this.$toast.open({
+              duration: 2000,
               message: `검색결과가 존재하지 않습니다!`,
               position: 'is-bottom',
               type: 'is-danger'
-            })
+            }))
             this.loading = false
             return
           } else if (status === daum.maps.services.Status.ERROR) {
-            this.$toast.open({
-              duration: 3000,
+            this.addToast(this.$toast.open({
+              duration: 2000,
               message: `검색결과 중 오류가 발생했습니다!`,
               position: 'is-bottom',
               type: 'is-danger'
-            })
+            }))
             this.loading = false            
             return
           } else {
-            this.$toast.open({
-              duration: 3000,
+            this.addToast(this.$toast.open({
+              duration: 2000,
               message: `검색결과 중 오류가 발생했습니다!`,
               position: 'is-bottom',
               type: 'is-danger'
-            })            
+            }))            
             this.loading = false
             return
           }
@@ -265,6 +270,7 @@
         })
       },
       categorySearch() {
+        this.closeToast()        
         let foodList = []      
         const callback = (result, status, pagination) => {
           if (status === daum.maps.services.Status.OK) {
@@ -283,12 +289,12 @@
                 })
                 this.map.setBounds(bounds)
                 this.loading = false
-                this.$toast.open({
-                  duration: 3000,
+                this.addToast(this.$toast.open({
+                  duration: 2000,
                   message: `내 주변 음식점을 검색합니다`,
                   position: 'is-bottom',
                   type: 'is-success'
-                })
+                }))
               })
               .catch((err) => {
                 this.loading = false
@@ -296,30 +302,30 @@
               })
             }
            } else if (status === daum.maps.services.Status.ZERO_RESULT) {
-            this.$toast.open({
-              duration: 3000,
+            this.addToast(this.$toast.open({
+              duration: 2000,
               message: `검색결과가 존재하지 않습니다!`,
               position: 'is-bottom',
               type: 'is-danger'
-            })
+            }))
             this.loading = false
             return
           } else if (status === daum.maps.services.Status.ERROR) {
-            this.$toast.open({
-              duration: 3000,
+            this.addToast(this.$toast.open({
+              duration: 2000,
               message: `검색결과 중 오류가 발생했습니다!`,
               position: 'is-bottom',
               type: 'is-danger'
-            })
+            }))
             this.loading = false            
             return
           } else {
-            this.$toast.open({
-              duration: 3000,
+            this.addToast(this.$toast.open({
+              duration: 2000,
               message: `검색결과 중 오류가 발생했습니다!`,
               position: 'is-bottom',
               type: 'is-danger'
-            })            
+            }))            
             this.loading = false
             return
           }

@@ -1,6 +1,5 @@
 let baseURI
 
-
 if (process.env.NODE_ENV.trim() === "development") {
 
   baseURI = "http://localhost:3000"    

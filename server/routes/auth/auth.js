@@ -61,10 +61,23 @@ router.get('/logout', tokenAuth.isAuthenticated(), (req, res) => {
 })
 
 router.get('/', tokenAuth.isAuthenticated(), (req, res) => {
-  res.json({
-    result: 'success',
-    userInfo: req.user,
-    accessToken: req.user.accessToken
-  })
+  const response = user => {
+    res.json({
+      result: 'success match user',
+      userInfo: user.info,
+      accessToken: req.user.accessToken
+    })
+  }
+
+  const error = err => {
+    res.status(409).json({
+      result: 'failed match user',
+      message: error.message
+    })
+  }
+
+  controller.MatchUser(req.user.email)
+    .then(response)
+    .catch(error)
 })
 export default router

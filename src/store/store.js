@@ -11,12 +11,19 @@ import map from './modules/map'
 
 Vue.use(Vuex)
 
+const state = {
+  toast: []
+}
+
 export default new Vuex.Store({
   modules: {
     auth,
     latlng,
     map
   },
+  state,
+  mutations,
+  getters,
   actions,
 })
 

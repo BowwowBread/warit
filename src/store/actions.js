@@ -121,3 +121,20 @@ export const UNHATE = ({
     })
   })
 }
+
+export const addToast = ({
+  state,
+  commit
+}, toast) => {
+  commit('addToast', toast)
+}
+
+export const closeToast = ({
+  state,
+  commit
+}) => {
+  if(state.toast.length != 0 ) {
+    state.toast[0].close()
+  }
+  commit('clearToast')
+}

@@ -3,7 +3,7 @@
     <b-loading :active.sync="isLoading" :canCancel="false"></b-loading>
     <div class="columns ">
       <div class="column ">
-      <b-field @keydown.native.enter="keywordSearch(keyword)">
+      <b-field>
         <b-input v-if="!searchLoading" v-on:input.native="searching" v-model="search" placeholder="음식점 검색" type="search" icon="search"></b-input>
         <b-input v-else v-on:input.native="searching" v-model="search" placeholder="검색중..." searchLoading type="search" icon="search"></b-input>      
       </b-field>
@@ -155,81 +155,90 @@ export default {
       'UNLIKE',
       'HATE',
       'UNHATE',
-      'fetchFoods'
+      'fetchFoods',
+      'addToast',
+      'closeToast',
     ]),
     getRandomFood() {
       let randomFoods = this.foodList.filter((food) => {
         return !food.hate
       })
       let randomFood = randomFoods[Math.floor(Math.random()*randomFoods.length)]
-      
-      this.$dialog.alert({
-        title: '아몰랑',
-        message: 
-        `  <div data-v-48c898da="" class="b-table">
-    <div class="table-wrapper">
-      <table class="table has-mobile-cards">
-        <thead>
-          <tr>
-            <th style="width: 200px;">
-              <div class="th-wrap">음식점명
-                <span class="icon is-small" style="display: none;">
-                  <i class="mdi">arrow_upward</i>
+      if(randomFood != undefined) {
+        this.$dialog.alert({
+          title: '아몰랑',
+          message: 
+          `  <div data-v-48c898da="" class="b-table">
+      <div class="table-wrapper">
+        <table class="table has-mobile-cards">
+          <thead>
+            <tr>
+              <th style="width: 200px;">
+                <div class="th-wrap">음식점명
+                  <span class="icon is-small" style="display: none;">
+                    <i class="mdi">arrow_upward</i>
+                  </span>
+                </div>
+              </th>
+              <th class="" style="width: 400px;">
+                <div class="th-wrap">카테고리
+                  <span class="icon is-small" style="display: none;">
+                    <i class="mdi">arrow_upward</i>
+                  </span>
+                </div>
+              </th>
+              <th class="" style="width: 300px;">
+                <div class="th-wrap">주소
+                  <span class="icon is-small" style="display: none;">
+                    <i class="mdi">arrow_upward</i>
+                  </span>
+                </div>
+              </th>
+              <th style="width: 150px;">
+                <div class="th-wrap is-centered">좋아요 수
+                  <span class="icon is-small" style="display: none;">
+                    <i class="mdi">arrow_upward</i>
+                  </span>
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="">
+              <td data-v-48c898da="" data-label="음식점명" class="">
+                <span>
+                  ${randomFood.place_name}
                 </span>
-              </div>
-            </th>
-            <th class="" style="width: 400px;">
-              <div class="th-wrap">카테고리
-                <span class="icon is-small" style="display: none;">
-                  <i class="mdi">arrow_upward</i>
+              </td>
+              <td data-v-48c898da="" data-label="카테고리" class="">
+                <span>
+                  ${randomFood.category_name}
                 </span>
-              </div>
-            </th>
-            <th class="" style="width: 300px;">
-              <div class="th-wrap">주소
-                <span class="icon is-small" style="display: none;">
-                  <i class="mdi">arrow_upward</i>
+              </td>
+              <td data-v-48c898da="" data-label="주소" class="">
+                <span>
+                  ${randomFood.address}
                 </span>
-              </div>
-            </th>
-            <th style="width: 150px;">
-              <div class="th-wrap is-centered">좋아요 수
-                <span class="icon is-small" style="display: none;">
-                  <i class="mdi">arrow_upward</i>
+              </td>
+              <td data-v-48c898da="" data-label="좋아요 수" class="has-text-centered">
+                <span>
+                  ${randomFood.likeCount}
                 </span>
-              </div>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="">
-            <td data-v-48c898da="" data-label="음식점명" class="">
-              <span>
-                ${randomFood.place_name}
-              </span>
-            </td>
-            <td data-v-48c898da="" data-label="카테고리" class="">
-              <span>
-                ${randomFood.category_name}
-              </span>
-            </td>
-            <td data-v-48c898da="" data-label="주소" class="">
-              <span>
-                ${randomFood.address}
-              </span>
-            </td>
-            <td data-v-48c898da="" data-label="좋아요 수" class="has-text-centered">
-              <span>
-                ${randomFood.likeCount}
-              </span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>`,
-        confirmText: '닫기',
-      })
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>`,
+          confirmText: '닫기',
+        })
+      } else {
+        this.$dialog.alert({
+          title: '아몰랑',
+          message: '검색결과가 존재하지 않습니다',
+          confirmText: '닫기',
+        })
+      }
     },
     fetchFoodList() {
       this.isLoading = true
@@ -274,54 +283,55 @@ export default {
       this.search = search.target.value
     },
     toggle(type, food) {
+      this.closeToast()
       if (type == "like") {
         this.LIKE(food.id)
-        this.$snackbar.open({
+        this.addToast(this.$snackbar.open({
           message: `${food.place_name} 음식점 좋아요`,
-          duration: 3000,          
+          duration: 1000,          
           type: 'is-success',
           position: 'is-bottom-right',
           actionText: '취소하기',
           onAction: () => {
               this.UNLIKE(food.id)
           }
-        })
+        }))
       } else if(type == "unlike") {
         this.UNLIKE(food.id)
-        this.$snackbar.open({
+        this.addToast(this.$snackbar.open({
           message: `${food.place_name} 음식점 좋아요 취소`,
-          duration: 3000,          
+          duration: 1000,          
           type: 'is-warning',
           position: 'is-bottom-right',
           actionText: '취소하기',
           onAction: () => {
               this.LIKE(food.id)
           }
-        })
+        }))
       } else if (type == "hate") {
         this.HATE(food.id)
-        this.$snackbar.open({
+        this.addToast(this.$snackbar.open({
           message: `${food.place_name} 음식점 싫어요`,
-          duration: 3000,          
+          duration: 1000,          
           type: 'is-success',
           position: 'is-bottom-right',
           actionText: '취소하기',
           onAction: () => {
               this.UNHATE(food.id)
           }
-        })
+        }))
       } else if (type == "unhate") {
         this.UNHATE(food.id)
-        this.$snackbar.open({
+        this.addToast(this.$snackbar.open({
           message: `${food.place_name} 음식점 싫어요 취소`,
-          duration: 3000,
+          duration: 1000,
           type: 'is-warning',
           position: 'is-bottom-right',
           actionText: '취소하기',
           onAction: () => {
               this.HATE(food.id)
           }
-        })
+        }))
       }
     }
   }

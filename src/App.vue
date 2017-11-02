@@ -33,6 +33,7 @@
     watch: {
       '$route' : [
         'tokenAuth', 
+        'closeToast'
       ]
     },
     computed: {
@@ -45,7 +46,8 @@
       ...mapActions([
         'TOKEN_AUTH',
         'UPDATE_LOCATION',
-        'SET_LOCATION'
+        'SET_LOCATION',
+        'closeToast'
       ]),
       updateLocation() {
         this.UPDATE_LOCATION()
@@ -62,7 +64,7 @@
             this.email = res.email
           })
           .catch((err) => {
-            console.log(err)
+            this.$cookie.delete('token')
             this.$router.push({
               path: '/sign'
             })
@@ -75,7 +77,7 @@
               this.email = res.email
             })
             .catch((err) => {
-              console.log(err)              
+              this.$cookie.delete('token')
               this.$router.push({
                 path: '/sign'
               })

@@ -101,18 +101,18 @@ router.post('/signup', (req, res) => {
 router.get('/auth_success', (req, res) => {
   const signType = req.flash('sign-type')[0]
   const userInfo = {
-      info: {
-        email: req.user.info.email,
-        username: req.user.info.username,
-        auth_provider: req.user.info.auth_provider,
-        profile_image: req.user.info.profile_image
-      }
+    info: {
+      email: req.user.info.email,
+      username: req.user.info.username,
+      auth_provider: req.user.info.auth_provider,
+      profile_image: req.user.info.profile_image
     }
+  }
   if (signType == "login") {
     //로그인 성공
     const secret = req.app.get('jwt-secret')
     const token = tokenAuth.signToken(userInfo.info, secret)
-    console.log(`${userInfo.info.email} login success by ${userInfo.infoa.uth_provider}`)
+    console.log(`${userInfo.info.email} login success by ${userInfo.info.auth_provider}`)
     res.cookie("email", userInfo.info.email)
       .cookie("token", token)
       .cookie('sign', signType)
@@ -122,7 +122,7 @@ router.get('/auth_success', (req, res) => {
     const response = user => {
       const secret = req.app.get('jwt-secret')
       const token = tokenAuth.signToken(userInfo.info, secret)
-      console.log(`${user.info.email} signup success by ${user.info.auth_provider}`)    
+      console.log(`${user.info.email} signup success by ${user.info.auth_provider}`)
       res.cookie("email", userInfo.info.email)
         .cookie("token", token)
         .cookie('sign', signType)
@@ -145,7 +145,7 @@ router.get('/auth_success', (req, res) => {
 
 router.get('/auth_fail', (req, res) => {
   const signType = req.flash('sign-type')[0]
-  console.log(`${signType} fail`)  
+  console.log(`${signType} fail`)
   res.cookie('sign', signType)
     .redirect(config.baseURI + '/sign')
 })
@@ -179,7 +179,7 @@ router.delete('/', tokenAuth.checkAdmin(), (req, res) => {
 router.delete('/:email', tokenAuth.isAuthenticated(), (req, res) => {
   const email = req.params.email
   const response = user => {
-    console.log(`${user.info.email} delete success by ${user.info.auth_provider}`)    
+    console.log(`${user.info.email} delete success by ${user.info.auth_provider}`)
     res.json({
       result: 'success remove user by email ' + email,
       user: user
@@ -187,7 +187,7 @@ router.delete('/:email', tokenAuth.isAuthenticated(), (req, res) => {
   }
 
   const error = err => {
-    console.log(`${user.info.email} register fail by ${user.info.auth_provider}`)    
+    console.log(`${user.info.email} register fail by ${user.info.auth_provider}`)
     res.status(409).json({
       result: 'failed remove user by email',
       message: err.message
