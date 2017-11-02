@@ -335,7 +335,7 @@
       displayMarker(place) {
         var customOverlay = new daum.maps.CustomOverlay({
           map: this.map,
-          content: '<span class="tag is-danger is-small is-rounded">' + place.place_name + ": " + place.category_name+ '</span>',
+          content: '<span class="tag is-danger is-small is-rounded">' + place.place_name + '</span>',
           position: new daum.maps.LatLng(place.y, place.x),
           yAnchor: 3,
           zIndex: 5

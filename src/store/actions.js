@@ -133,8 +133,8 @@ export const closeToast = ({
   state,
   commit
 }) => {
-  if(state.toast.length != 0 ) {
-    state.toast[0].close()
+  if(state.toast != null ) {
+    state.toast.close()
   }
   commit('clearToast')
 }
