@@ -5,7 +5,7 @@
       <div class="level">
         <div class="level-left">
           <button class="button is-primary is-outlined" @click="updateLocation">내 위치</button>    
-          <button class="button is-primary is-outlined" @click="categorySearch">내 위치 검색하기</button>        
+          <button class="button is-primary is-outlined" @click="categorySearch">주변 검색하기</button>        
           </div>
         <div class="level-right">
           <b-field class="is-primary" @keydown.native.enter="keywordSearch(keyword)">
@@ -186,6 +186,13 @@
               zIndex: 5
           });
           customOverlay.setMap(this.map)
+          daum.maps.event.addListener(this.map, 'center_changed', () => {
+            const LatLng = {
+              lat : this.map.getCenter().getLat(),
+              lng : this.map.getCenter().getLng()
+            }
+            this.SET_LOCATION(LatLng)
+          });
       },
       keywordSearch(keyword) {
         this.closeToast()        

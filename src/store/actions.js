@@ -14,7 +14,7 @@ import api from '../api/'
 export const CATEGORY_SEARCH = ({
   getters
 }, callback) => {
-  const LatLng = getters.getCurLatLng
+  const LatLng = getters.getLatLng
   const places = new daum.maps.services.Places()
   const coords = new daum.maps.LatLng(LatLng.lat, LatLng.lng)
 
