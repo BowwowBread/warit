@@ -21,14 +21,14 @@
     margin-top: 3rem;
   }
   .router-view {
-    height: calc(100vh - 3.5rem) !important
+    height: 100vh !important
   }
 
 }
 @media screen and (max-width: 1023px) {
 
   .router-view {
-    height: calc(100vh - 15rem) !important   
+    height: calc(100vh - 14rem) !important   
   }
 
 
