@@ -1,36 +1,38 @@
-*{
+* {
   margin: 0;
   padding: 0;
 }
-html, body {
+
+html,
+body {
   height: 100%;
 }
+
 .router-view {
-  height: calc(100vh - 3.25rem)
+  height: calc(100% - 3.25rem) !important
 }
+
 .control {
   margin-top: 1rem;
 }
+
 #app {
   min-width: 300px;
   height: 100%
 }
-.modal-card  {
+
+.modal-card {
   max-width: 100% !important
 }
 
 @media screen and (max-width: 768px) {
-
-  #app{
-    margin-top: 3rem;
-  }
-
-}
-@media screen and (max-width: 1023px) {
-
   .router-view {
-    height: calc(100% - 6.5rem)
+    height: 100% !important
   }
+}
 
-
+@media screen and (min-width: 769px) and (max-width: 1023px) {
+  .router-view {
+    height: calc(100% - 6.5rem) !important
+  }
 }
