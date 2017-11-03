@@ -145,6 +145,7 @@
       ]),
       updateLocation() {
         this.closeToast()
+        this.isLoading = true
         this.addToast(this.$toast.open({
           duration: 3000,
           message: `내 위치를 검색중입니다`,
@@ -156,7 +157,8 @@
             this.CurLatLng = CurLatLng
             const center = new daum.maps.LatLng(this.CurLatLng.lat, this.CurLatLng.lng)
             this.map.setLevel(2)          
-            this.map.panTo(center)                    
+            this.map.panTo(center)             
+            this.isLoading = false       
         })
       },
       moveCurLatLng() {
@@ -205,6 +207,13 @@
           }))
           return
         }
+        this.addToast(this.$toast.open({
+          duration: 2000,
+          message: `${keyword} 주변 음식점을 검색합니다`,
+          position: 'is-bottom',
+          type: 'is-success'
+        }))
+        this.isLoading = true
         let foodList = []      
         this.loading = true        
         const callback = (result, status, pagination) => {
@@ -229,16 +238,12 @@
                 }
                 this.SET_LOCATION(LatLng)
                 this.loading = false
-                this.addToast(this.$toast.open({
-                  duration: 2000,
-                  message: `${keyword} 주변 음식점을 검색합니다`,
-                  position: 'is-bottom',
-                  type: 'is-success'
-                }))
+                this.isLoading = false                
               })
               .catch((err) => {
                 console.log(err)
                 this.loading = false
+                this.isLoading = false                
               })
             }
           } else if (status === daum.maps.services.Status.ZERO_RESULT) {
@@ -249,6 +254,7 @@
               type: 'is-danger'
             }))
             this.loading = false
+            this.isLoading = false            
             return
           } else if (status === daum.maps.services.Status.ERROR) {
             this.addToast(this.$toast.open({
@@ -258,6 +264,7 @@
               type: 'is-danger'
             }))
             this.loading = false            
+            this.isLoading = false            
             return
           } else {
             this.addToast(this.$toast.open({
@@ -267,6 +274,7 @@
               type: 'is-danger'
             }))            
             this.loading = false
+            this.isLoading = false            
             return
           }
         }
@@ -278,6 +286,13 @@
       },
       categorySearch() {
         this.closeToast()        
+        this.addToast(this.$toast.open({
+          duration: 2000,
+          message: `내 주변 음식점을 검색합니다`,
+          position: 'is-bottom',
+          type: 'is-success'
+        }))
+        this.isLoading = true        
         let foodList = []      
         const callback = (result, status, pagination) => {
           if (status === daum.maps.services.Status.OK) {
@@ -296,15 +311,11 @@
                 })
                 this.map.setBounds(bounds)
                 this.loading = false
-                this.addToast(this.$toast.open({
-                  duration: 2000,
-                  message: `내 주변 음식점을 검색합니다`,
-                  position: 'is-bottom',
-                  type: 'is-success'
-                }))
+                this.isLoading = false
               })
               .catch((err) => {
                 this.loading = false
+                this.isLoading = false                
                 console.log(err)
               })
             }
@@ -316,6 +327,7 @@
               type: 'is-danger'
             }))
             this.loading = false
+            this.isLoading = false            
             return
           } else if (status === daum.maps.services.Status.ERROR) {
             this.addToast(this.$toast.open({
@@ -325,6 +337,7 @@
               type: 'is-danger'
             }))
             this.loading = false            
+            this.isLoading = false            
             return
           } else {
             this.addToast(this.$toast.open({
@@ -334,6 +347,7 @@
               type: 'is-danger'
             }))            
             this.loading = false
+            this.isLoading = false            
             return
           }
         }
