@@ -288,7 +288,7 @@
         this.closeToast()        
         this.addToast(this.$toast.open({
           duration: 2000,
-          message: `내 주변 음식점을 검색합니다`,
+          message: `주변 음식점을 검색합니다`,
           position: 'is-bottom',
           type: 'is-success'
         }))
