@@ -293,13 +293,11 @@
           type: 'is-success'
         }))
         this.SET_LOCATION(this.LatLng)        
-        console.log(this.getLatLng)
         this.isLoading = true        
         let foodList = []      
         const callback = (result, status, pagination) => {
           if (status === daum.maps.services.Status.OK) {
             this.clearMarker()            
-            console.log(result)
             foodList.push(result)
             if (pagination.hasNextPage) {
               pagination.nextPage()
@@ -313,7 +311,6 @@
                     bounds.extend(new daum.maps.LatLng(foodData.y, foodData.x))
                 })
                 this.map.setBounds(bounds)
-                console.log(res)
                 this.loading = false
                 this.isLoading = false
               })
