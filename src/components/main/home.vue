@@ -25,7 +25,7 @@
           <button style="width:100%" class="button is-primary is-outlined" @click="updateLocation">내 위치</button>    
         </div>
         <div class="column is-half">
-          <button style="width:100%" class="button is-primary is-outlined" @click="categorySearch">내 위치 검색하기</button>        
+          <button style="width:100%" class="button is-primary is-outlined" @click="categorySearch">주변 검색하기</button>        
         </div>
         <div class="column">
           <b-field class="is-primary" @keydown.native.enter="keywordSearch(keyword)">
