@@ -193,8 +193,7 @@
               lat : this.map.getCenter().getLat(),
               lng : this.map.getCenter().getLng()
             }
-            console.log(LatLng)
-            this.SET_LOCATION(LatLng)
+            this.LatLng = LatLng
           });
       },
       keywordSearch(keyword) {
@@ -293,6 +292,7 @@
           position: 'is-bottom',
           type: 'is-success'
         }))
+        this.SET_LOCATION(this.LatLng)        
         console.log(this.getLatLng)
         this.isLoading = true        
         let foodList = []      
