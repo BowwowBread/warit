@@ -188,12 +188,14 @@
               zIndex: 5
           });
           customOverlay.setMap(this.map)
-          daum.maps.event.addListener(this.map, 'center_changed', () => {
+          daum.maps.event.addListener(this.map, 'dragend', () => {        
+    
             const LatLng = {
               lat : this.map.getCenter().getLat(),
               lng : this.map.getCenter().getLng()
             }
             this.LatLng = LatLng
+              
           });
       },
       keywordSearch(keyword) {
