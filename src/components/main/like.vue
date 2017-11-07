@@ -9,9 +9,9 @@
       </b-field>
       </div>
       <div class="column is-2 is-hidden-mobile">
-      <button class="button is-danger randomButton" @click="getRandomFood">아몰랑</button>  
+      <button class="button is-danger is-inverted is-outlined  randomButton" @click="getRandomFood">아몰랑</button>  
       </div>
-      <button class="button is-danger randomButton is-block-mobile is-hidden-tablet" @click="getRandomFood">아몰랑</button>
+      <button class="button is-danger is-inverted is-outlined  randomButton is-block-mobile is-hidden-tablet" @click="getRandomFood">아몰랑</button>
       </div>
         <b-pagination
             :total="total"

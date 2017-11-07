@@ -1,6 +1,7 @@
+
 .randomButton {
   margin-top: 1rem;
-  width: 9rem
+  width: 9rem;
 }
 
 @media screen and (max-width: 768px) {
@@ -11,7 +12,6 @@
     left: .5rem;
     margin: 0;
     width: 5rem;
-    color: white !important;
     z-index: 100;
   }
 
