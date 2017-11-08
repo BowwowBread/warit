@@ -156,6 +156,7 @@
           .then((CurLatLng) => {
             this.CurLatLng = CurLatLng
             const center = new daum.maps.LatLng(this.CurLatLng.lat, this.CurLatLng.lng)
+            this.SET_LOCATION(CurLatLng)
             this.map.setLevel(2)          
             this.map.panTo(center)             
             this.isLoading = false       
@@ -195,8 +196,6 @@
               lng : this.map.getCenter().getLng()
             }
             this.LatLng = LatLng
-            console.log(this.LatLng)
-              
           });
       },
       keywordSearch(keyword) {
@@ -296,7 +295,6 @@
           type: 'is-success'
         }))
         this.SET_LOCATION(this.LatLng)        
-        console.log(this.getLatLng)
         this.isLoading = true        
         let foodList = []      
         const callback = (result, status, pagination) => {
