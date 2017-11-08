@@ -156,7 +156,7 @@
           .then((CurLatLng) => {
             this.CurLatLng = CurLatLng
             const center = new daum.maps.LatLng(this.CurLatLng.lat, this.CurLatLng.lng)
-            this.SET_LOCATION(CurLatLng)
+            this.LatLng = CurLatLng
             this.map.setLevel(2)          
             this.map.panTo(center)             
             this.isLoading = false       
