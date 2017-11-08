@@ -195,6 +195,7 @@
               lng : this.map.getCenter().getLng()
             }
             this.LatLng = LatLng
+            console.log(this.LatLng)
               
           });
       },
@@ -295,6 +296,7 @@
           type: 'is-success'
         }))
         this.SET_LOCATION(this.LatLng)        
+        console.log(this.getLatLng)
         this.isLoading = true        
         let foodList = []      
         const callback = (result, status, pagination) => {
