@@ -4,7 +4,7 @@ if (process.env.NODE_ENV.trim() === "development") {
 
   baseURI = "http://localhost:3000"    
 } else {
-  baseURI = "https://ec2-13-125-41-251.ap-northeast-2.compute.amazonaws.com:3000"  
+  baseURI = "https://ec2-18-220-103-113.us-east-2.compute.amazonaws.com:3000"  
 }
 console.log(`baseURI : ${baseURI}`)
 
