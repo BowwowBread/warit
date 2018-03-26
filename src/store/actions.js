@@ -41,7 +41,7 @@ export const KEYWORD_SEARCH = ({
     places.keywordSearch(arg.keyword, arg.callback, {
       category_group_code: "FD6",
       location: new daum.maps.LatLng(LatLng.lat, LatLng.lng),
-      radius: 500,
+      // radius: 500,
       sort: daum.maps.services.SortBy.DISTANCE,
     })
   }
